@@ -2565,14 +2565,20 @@
 
             // ---- Utility: generate per-section PDF blob ----
             async function generateSectionPdfBlob(sectionTitle, sectionColor, contentElementId, filename) {
+                // Force update DOM elements with current salutation, comments, and signature choice
+                if (typeof updateLiveDoctorHeaderAndFooter === 'function') {
+                    updateLiveDoctorHeaderAndFooter();
+                }
+
                 const container = document.createElement('div');
                 container.style.background = '#0f172a';
                 container.style.color = '#f8fafc';
-                container.style.padding = '40px';
+                container.style.padding = '35px 30px';
                 container.style.fontFamily = 'Inter, Arial, sans-serif';
 
                 const doctorSalutation = getDoctorSalutationText();
                 const sigData = getDoctorSignatureData();
+                const commentsHtml = getDoctorCommentsHtml();
 
                 let headerExtra = '';
                 if (contentElementId === 'analysisResult') {
@@ -2612,18 +2618,23 @@
                 content.style.background = 'transparent';
                 content.style.padding = '0';
                 content.classList.remove('hidden');
+
+                // Remove inner duplicate footers/comments inside clone
+                content.querySelectorAll('.doctor-comments-box, .doctor-signature-footer, .patient-sig-footer').forEach(el => el.remove());
+
                 container.appendChild(content);
 
-                // Add Doctor Remarks Box & Selected Doctor Signature Footer to bottom of PDF container
-                const commentsHtml = getDoctorCommentsHtml();
+                // Add Doctor Remarks Box (if present)
                 if (commentsHtml) {
                     const commentsWrapper = document.createElement('div');
+                    commentsWrapper.style.cssText = 'page-break-inside: avoid; break-inside: avoid; margin-top: 20px;';
                     commentsWrapper.innerHTML = commentsHtml;
                     container.appendChild(commentsWrapper);
                 }
 
+                // Add Doctor Signature Footer
                 const footerDiv = document.createElement('div');
-                footerDiv.style.cssText = `margin-top: 25px; padding-top: 15px; border-top: 2px solid ${sectionColor}; display: flex; justify-content: space-between; align-items: center;`;
+                footerDiv.style.cssText = `margin-top: 25px; padding-top: 15px; border-top: 2px solid ${sectionColor}; display: flex; justify-content: space-between; align-items: center; page-break-inside: avoid; break-inside: avoid;`;
                 footerDiv.innerHTML = `
                     <div style="display: flex; align-items: center; gap: 12px;">
                         <img src="${SPANDAN_LOGO_DATA_URI}" alt="Spandan Logo" style="height:35px; width:auto; border-radius:4px;">
@@ -2631,7 +2642,7 @@
                             ${sigData.html}
                         </div>
                     </div>
-                    <div style="color:#64748b; font-size:0.8rem; font-weight:600; text-align:right;">
+                    <div style="color:#64748b; font-size:0.85rem; font-weight:700; text-align:right;">
                         SPANDAN CLINICAL AI
                     </div>
                 `;
@@ -2661,9 +2672,9 @@
                 document.body.appendChild(wrapper);
 
                 const opt = {
-                    margin: 0,
+                    margin: [0.35, 0.35, 0.35, 0.35],
                     filename: filename,
-                    image: { type: 'jpeg', quality: 0.97 },
+                    image: { type: 'jpeg', quality: 0.98 },
                     html2canvas: { scale: 2, useCORS: true, backgroundColor: '#0f172a', scrollX: 0, scrollY: 0 },
                     jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
                     pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
@@ -3386,10 +3397,13 @@ CRITICAL MANDATE 1 — PAGE COUNT & VERBATIM EXTRACTION:
 
   Total Pages Extracted and Analyzed: ${currentFiles.length} of ${currentFiles.length}
 
-CRITICAL MANDATE 2 — GUARANTEED STRUCTURED NORMAL & ABNORMAL CLASSIFICATION:
-- You MUST generate BOTH Group A (Laboratory Investigations) AND Group B (Imaging & Diagnostic Investigations) in clean markdown tables.
-- DO NOT return unstructured text instead of tables.
-- EVERY single row in Group A and Group B MUST have an explicit classification and status badge:
+CRITICAL MANDATE 2 — GUARANTEED IMAGING & LABORATORY EXTRACTION AND CLASSIFICATION:
+- You MUST generate BOTH Group A (Blood & Laboratory Investigations) AND Group B (Imaging & Diagnostic Investigations) in clean markdown tables.
+- IF THE REPORT CONTAINS ANY IMAGING OR DIAGNOSTIC INVESTIGATION (2D Echocardiogram, Ultrasonography/USG, CT Scan, MRI, ECG/EKG, X-Ray, TMT, Holter, Doppler, Endoscopy, Colonoscopy, Mammography, etc.):
+  * In Group B: You MUST extract EVERY SINGLE imaging parameter, chamber dimension, ejection fraction (EF%), valve assessment, wall motion abnormality (RWMA), organ measurement, CT Hounsfield units, impression, and conclusion.
+  * DO NOT leave Group B empty! DO NOT omit imaging parameters or summarize them into plain text! Put ALL imaging parameters and findings into the Group B Markdown Table!
+  * If no blood tests are present in an imaging study, put a single clear row in Group A: "| No blood/lab parameters reported in this imaging report | - | - | Normal | 🟢 Normal |".
+- EVERY single row in Group A and Group B MUST have an explicit status badge:
   * 🟢 Normal (for normal results / within reference range / unremarkable findings)
   * 🔴 High / 🔴 Low / 🔴 Abnormal (for elevated, decreased, or abnormal findings/impressions)
 - DO NOT show only normal findings. DO NOT show only abnormal findings. Display ALL parameters and procedures present across all ${currentFiles.length} pages.
@@ -3713,7 +3727,8 @@ Total Pages Extracted and Analyzed: ${currentFiles.length} of ${currentFiles.len
                         </div>
                     </div>
                     `;
-                    analysisResult.innerHTML = docHeaderSalutationHtml + htmlContent + docSignatureHtml;
+                    const commentsHtml = getDoctorCommentsHtml();
+                    analysisResult.innerHTML = docHeaderSalutationHtml + htmlContent + (commentsHtml || '') + docSignatureHtml;
 
                     // Render to Story tab
                     let storyHtmlContent = marked.parse(storyMarkup);
