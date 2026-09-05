@@ -1142,13 +1142,20 @@
                             <input type="text" id="doctorNameInput" placeholder="Enter Doctor's Name (e.g. Smith)..." style="flex: 1; min-width: 180px; background: rgba(15, 23, 42, 0.8); color: #f8fafc; border: 1px solid rgba(59, 130, 246, 0.4); padding: 6px 12px; border-radius: 6px; font-size: 0.88rem; outline: none;" value="">
                         </div>
                         <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; border-top: 1px dashed rgba(59, 130, 246, 0.2); padding-top: 8px;">
+                            <span style="font-weight: 700; color: #25D366; font-size: 0.92rem; display: flex; align-items: center; gap: 6px; white-space: nowrap;">
+                                📱 Doctor WhatsApp No:
+                            </span>
+                            <input type="text" id="doctorWaNumberInput" placeholder="Enter Doctor's Mobile No (e.g. +91 9822012345)..." style="flex: 1; min-width: 220px; background: rgba(15, 23, 42, 0.8); color: #25D366; border: 1px solid rgba(37, 211, 102, 0.4); padding: 6px 12px; border-radius: 6px; font-size: 0.88rem; font-weight: 600; outline: none;" value="">
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; border-top: 1px dashed rgba(59, 130, 246, 0.2); padding-top: 8px;">
                             <span style="font-weight: 700; color: #10b981; font-size: 0.92rem; display: flex; align-items: center; gap: 6px; white-space: nowrap;">
                                 ✍️ Doctor Signature (Footer):
                             </span>
                             <select id="doctorSignatureSelect" style="flex: 1; min-width: 260px; background: rgba(15, 23, 42, 0.85); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); padding: 6px 10px; border-radius: 6px; font-size: 0.88rem; font-weight: 600; outline: none; cursor: pointer;">
                                 <option value="gurunath" selected>Dr Gurunath Parale ,MD,DM, FACC, FCSI. FICP ( INTERVENTIONAL CARDIOLOGIST )</option>
                                 <option value="chinmay">Dr Chinmay Parale ,MD,DM, MRCP, FELLOWSHIP IN EP AND STRUCTURAL INTERVENTIONS</option>
-                                <option value="both">Both (Dr Gurunath Parale & Dr Chinmay Parale - Parale Healthcare)</option>
+                                <option value="tanushree">Dr Tanushree Parale ,MD, DrNB, Gastroenterologist , Fellowship in advanced gastroenetrology interventions</option>
+                                <option value="all">All Doctors (Spandan Healthcare Specialists)</option>
                             </select>
                         </div>
                         <div style="display: flex; flex-direction: column; gap: 6px; border-top: 1px dashed rgba(59, 130, 246, 0.2); padding-top: 8px;">
@@ -1206,24 +1213,74 @@
                         style="margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.6rem; justify-content: flex-end; width: 100%;">
                         <!-- Structured report actions -->
                         <div id="dlBarStructured" style="display:flex; flex-wrap:wrap; gap:0.6rem; width:100%; justify-content:flex-end;">
-                            <button id="waStructuredBtn" class="btn-primary" style="padding:0.6rem 1rem; background:#25D366; color:white; border:none; cursor:pointer; border-radius:8px; font-weight:600; display:flex; align-items:center; gap:0.5rem; box-shadow:0 4px 12px rgba(37,211,102,0.3);">📲 WhatsApp</button>
-                            <button id="emailStructuredBtn" class="btn-primary" style="padding:0.6rem 1rem; background:#ea4335; color:white; border:none; cursor:pointer; border-radius:8px; font-weight:600; display:flex; align-items:center; gap:0.5rem; box-shadow:0 4px 12px rgba(234,67,53,0.3);">✉️ Email</button>
+                            <button id="waStructuredBtn" class="btn-primary" style="padding:0.6rem 1rem; background:#25D366; color:white; border:none; cursor:pointer; border-radius:8px; font-weight:600; display:flex; align-items:center; gap:0.5rem; box-shadow:0 4px 12px rgba(37,211,102,0.3);">📲 Share Doctor Report on WhatsApp</button>
+                            <button id="emailStructuredBtn" class="btn-primary" style="padding:0.6rem 1rem; background:#ea4335; color:white; border:none; cursor:pointer; border-radius:8px; font-weight:600; display:flex; align-items:center; gap:0.5rem; box-shadow:0 4px 12px rgba(234,67,53,0.3);">✉️ Email Doctor</button>
                             <button id="pdfStructuredBtn" class="btn-primary" style="padding:0.6rem 1.2rem; background:#3b82f6;">⬇️ PDF</button>
                             <button id="wordStructuredBtn" class="btn-secondary" style="padding:0.6rem 1.2rem;">⬇️ Word</button>
                         </div>
                         <!-- Clinical Story actions -->
                         <div id="dlBarStory" style="display:none; flex-wrap:wrap; gap:0.6rem; width:100%; justify-content:flex-end;">
-                            <button id="waStoryBtn" class="btn-primary" style="padding:0.6rem 1rem; background:#25D366; color:white; border:none; cursor:pointer; border-radius:8px; font-weight:600; display:flex; align-items:center; gap:0.5rem; box-shadow:0 4px 12px rgba(37,211,102,0.3);">📲 WhatsApp</button>
-                            <button id="emailStoryBtn" class="btn-primary" style="padding:0.6rem 1rem; background:#ea4335; color:white; border:none; cursor:pointer; border-radius:8px; font-weight:600; display:flex; align-items:center; gap:0.5rem; box-shadow:0 4px 12px rgba(234,67,53,0.3);">✉️ Email</button>
+                            <button id="waStoryBtn" class="btn-primary" style="padding:0.6rem 1rem; background:#25D366; color:white; border:none; cursor:pointer; border-radius:8px; font-weight:600; display:flex; align-items:center; gap:0.5rem; box-shadow:0 4px 12px rgba(37,211,102,0.3);">📲 Share Narrative on WhatsApp</button>
+                            <button id="emailStoryBtn" class="btn-primary" style="padding:0.6rem 1rem; background:#ea4335; color:white; border:none; cursor:pointer; border-radius:8px; font-weight:600; display:flex; align-items:center; gap:0.5rem; box-shadow:0 4px 12px rgba(234,67,53,0.3);">✉️ Email Narrative</button>
                             <button id="pdfStoryBtn" class="btn-primary" style="padding:0.6rem 1.2rem; background:#10b981;">⬇️ PDF</button>
                             <button id="wordStoryBtn" class="btn-secondary" style="padding:0.6rem 1.2rem;">⬇️ Word</button>
                         </div>
                         <!-- Patient Summary actions -->
-                        <div id="dlBarSummary" style="display:none; flex-wrap:wrap; gap:0.6rem; width:100%; justify-content:flex-end;">
-                            <button id="waSummaryBtn" class="btn-primary" style="padding:0.6rem 1rem; background:#25D366; color:white; border:none; cursor:pointer; border-radius:8px; font-weight:600; display:flex; align-items:center; gap:0.5rem; box-shadow:0 4px 12px rgba(37,211,102,0.3);">📲 WhatsApp</button>
-                            <button id="emailSummaryBtn" class="btn-primary" style="padding:0.6rem 1rem; background:#ea4335; color:white; border:none; cursor:pointer; border-radius:8px; font-weight:600; display:flex; align-items:center; gap:0.5rem; box-shadow:0 4px 12px rgba(234,67,53,0.3);">✉️ Email</button>
+                        <div id="dlBarSummary" style="display:none; flex-wrap:wrap; gap:0.6rem; width:100%; justify-content:flex-end; align-items:center;">
+                            <input type="text" id="patientWaNumberInput" placeholder="Patient Mobile No (e.g. 9876543210)..." style="padding:0.6rem 0.8rem; background:rgba(15,23,42,0.8); color:#25D366; border:1px solid rgba(37,211,102,0.4); border-radius:8px; font-size:0.85rem; font-weight:600; outline:none; min-width:200px;">
+                            <button id="waSummaryBtn" class="btn-primary" style="padding:0.6rem 1rem; background:#25D366; color:white; border:none; cursor:pointer; border-radius:8px; font-weight:600; display:flex; align-items:center; gap:0.5rem; box-shadow:0 4px 12px rgba(37,211,102,0.3);">📲 Share Patient Summary on WhatsApp</button>
+                            <button id="emailSummaryBtn" class="btn-primary" style="padding:0.6rem 1rem; background:#ea4335; color:white; border:none; cursor:pointer; border-radius:8px; font-weight:600; display:flex; align-items:center; gap:0.5rem; box-shadow:0 4px 12px rgba(234,67,53,0.3);">✉️ Email Patient</button>
                             <button id="pdfAllBtn" class="btn-primary" style="padding:0.6rem 1rem; background:#8b5cf6; color:white; border:none; cursor:pointer; border-radius:8px; font-weight:600; display:flex; align-items:center; gap:0.5rem; box-shadow:0 4px 12px rgba(139,92,246,0.3);">⬇️ Full PDF (All Sections)</button>
                         </div>
+
+    <!-- WhatsApp Share Prompt Modal (Doctor / Patient) -->
+    <div id="waPromptModal" style="position:fixed; inset:0; z-index:999999; background:rgba(15, 23, 42, 0.88); backdrop-filter:blur(10px); display:none; align-items:center; justify-content:center; padding:1rem;">
+        <div style="background:#1e293b; border:1px solid #3b82f6; border-radius:18px; width:100%; max-width:500px; padding:1.75rem; color:#f8fafc; box-shadow:0 25px 50px -12px rgba(0,0,0,0.6); text-align:center;">
+            <div style="font-size:2.5rem; margin-bottom:0.5rem;" id="waPromptIcon">📲</div>
+            <h3 id="waPromptTitle" style="margin:0 0 0.5rem 0; font-size:1.25rem; color:#60a5fa; font-weight:700;">
+                Share Report on WhatsApp?
+            </h3>
+            <p id="waPromptSubtitle" style="font-size:0.9rem; color:#cbd5e1; margin:0 0 1.25rem 0; line-height:1.5;">
+                Would you like to send this PDF report on WhatsApp?
+            </p>
+
+            <div style="background:#0f172a; border-radius:12px; padding:1rem; margin-bottom:1.25rem; border:1px solid #334155; text-align:left; font-size:0.85rem; line-height:1.6; color:#94a3b8;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem;">
+                    <strong style="color:#e2e8f0;">Recipient Target:</strong>
+                    <span id="waPromptRecipient" style="color:#34d399; font-weight:600;">Doctor / Sir</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:0.4rem;">
+                    <strong style="color:#e2e8f0;">PDF Report File:</strong>
+                    <span id="waPromptFilename" style="color:#60a5fa; font-weight:600;">MediScan_Report.pdf</span>
+                </div>
+                <div style="display:flex; justify-content:space-between;">
+                    <strong style="color:#e2e8f0;">PDF Status:</strong>
+                    <span id="waPromptStatus" style="color:#22c55e; font-weight:600;">✅ Pre-generated & Ready</span>
+                </div>
+            </div>
+
+            <!-- WhatsApp Number Input Placeholder inside Modal -->
+            <div style="margin-bottom:1.25rem; text-align:left;">
+                <label style="display:block; font-size:0.88rem; font-weight:700; color:#25D366; margin-bottom:0.4rem;">
+                    📱 Target WhatsApp Phone Number:
+                </label>
+                <input type="text" id="waPromptPhoneInput" placeholder="Enter 10-digit mobile no (e.g. 9822012345)..." style="width:100%; background:#0f172a; color:#25D366; border:1.5px solid #25D366; padding:10px 14px; border-radius:10px; font-size:0.95rem; font-weight:700; outline:none; box-shadow:0 0 10px rgba(37,211,102,0.2);">
+                <span style="font-size:0.75rem; color:#94a3b8; display:block; margin-top:0.35rem;">
+                    Opens WhatsApp application <b>directly to this contact's chat box</b>.
+                </span>
+            </div>
+
+            <!-- Action Buttons -->
+            <div style="display:flex; flex-direction:column; gap:0.75rem;">
+                <button id="waPromptConfirmBtn" style="width:100%; padding:0.9rem 1.2rem; background:linear-gradient(135deg, #25D366, #128C7E); color:white; font-weight:700; border:none; border-radius:12px; font-size:1.02rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.6rem; box-shadow:0 4px 16px rgba(37,211,102,0.4);">
+                    📲 Yes, Open WhatsApp Chat
+                </button>
+                <button id="waPromptCancelBtn" style="width:100%; padding:0.7rem 1rem; background:transparent; color:#94a3b8; border:1px solid #334155; border-radius:10px; font-size:0.9rem; cursor:pointer;">
+                    ❌ Cancel
+                </button>
+            </div>
+        </div>
+    </div>
     <!-- Interactive Live Camera Modal -->
     <div id="cameraModal" class="camera-modal hidden">
         <div class="camera-modal-content">
@@ -1254,6 +1311,56 @@
                     <button id="retakePhotoBtn" class="btn-secondary" style="flex: 1; padding: 0.8rem;">🔄 Retake</button>
                     <button id="usePhotoBtn" class="btn-primary" style="flex: 1; padding: 0.8rem; background: var(--accent-color);">✅ Use This Photo</button>
                 </div>
+        </div>
+    </div>
+
+    <!-- WhatsApp PDF Share Modal -->
+    <div id="waShareModal" style="position:fixed; inset:0; z-index:999999; background:rgba(15, 23, 42, 0.85); backdrop-filter:blur(8px); display:none; align-items:center; justify-content:center; padding:1rem;">
+        <div style="background:#1e293b; border:1px solid #3b82f6; border-radius:16px; width:100%; max-width:480px; padding:1.5rem; color:#f8fafc; box-shadow:0 25px 50px -12px rgba(0,0,0,0.5); text-align:center;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; border-bottom:1px solid #334155; padding-bottom:0.75rem;">
+                <h3 style="margin:0; font-size:1.1rem; color:#60a5fa; display:flex; align-items:center; gap:0.5rem;">
+                    📲 WhatsApp PDF Share
+                </h3>
+                <button id="closeWaModalBtn" style="background:none; border:none; color:#94a3b8; font-size:1.4rem; cursor:pointer; padding:0 4px;">&times;</button>
+            </div>
+
+            <div style="background:#0f172a; border-radius:10px; padding:1rem; margin-bottom:1.25rem; border:1px solid #1e293b; text-align:left;">
+                <div style="display:flex; align-items:center; gap:0.6rem; color:#22c55e; font-weight:600; margin-bottom:0.4rem;">
+                    <span>📄</span> <span id="waModalFilename" style="color:#f8fafc; font-size:0.95rem;">MediScan_Report.pdf</span>
+                </div>
+                <p style="font-size:0.82rem; color:#94a3b8; margin:0; line-height:1.4;">
+                    PDF downloaded to device. Formatted with SPANDAN logo, Doctor header & signatures.
+                </p>
+            </div>
+
+            <!-- Mobile Action -->
+            <div style="margin-bottom:1rem;">
+                <button id="waModalMobileShareBtn" style="width:100%; padding:0.9rem 1rem; background:linear-gradient(135deg, #25D366, #128C7E); color:white; font-weight:700; border:none; border-radius:10px; font-size:1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.5rem; box-shadow:0 4px 14px rgba(37,211,102,0.4);">
+                    📲 Tap to Attach & Share PDF (Mobile/Mac)
+                </button>
+                <span style="font-size:0.75rem; color:#94a3b8; display:block; margin-top:0.35rem;">
+                    Opens phone/tablet menu with <b>PDF attached</b> directly to WhatsApp.
+                </span>
+            </div>
+
+            <!-- Desktop Action -->
+            <div style="margin-bottom:1rem; border-top:1px solid #334155; padding-top:1rem;">
+                <button id="waModalWebBtn" style="width:100%; padding:0.75rem 1rem; background:#0284c7; color:white; font-weight:600; border:none; border-radius:10px; font-size:0.95rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.5rem;">
+                    🌐 Open WhatsApp Web (Desktop)
+                </button>
+                <span style="font-size:0.75rem; color:#94a3b8; display:block; margin-top:0.35rem;">
+                    PDF saved in Downloads. Drag file into WhatsApp Web or click 📎 Attach Document.
+                </span>
+            </div>
+
+            <!-- Extra controls -->
+            <div style="display:flex; gap:0.5rem; margin-top:0.75rem;">
+                <button id="waModalCopyBtn" style="flex:1; padding:0.6rem; background:#334155; color:#e2e8f0; border:none; border-radius:8px; font-size:0.82rem; cursor:pointer;">
+                    📋 Copy Text Report
+                </button>
+                <button id="waModalRedownloadBtn" style="flex:1; padding:0.6rem; background:#334155; color:#e2e8f0; border:none; border-radius:8px; font-size:0.82rem; cursor:pointer;">
+                    ⬇️ Re-download PDF
+                </button>
             </div>
         </div>
     </div>
@@ -2366,12 +2473,19 @@
                         fullText: 'Dr Chinmay Parale ,MD, DM, MRCP, FELLOWSHIP IN EP AND STRUCTURAL INTERVENTIONS',
                         html: `<div style="color:#60a5fa; font-weight:bold; font-size:0.96rem;">Dr Chinmay Parale ,MD, DM, MRCP</div><div style="color:#94a3b8; font-size:0.82rem; font-weight:600;">FELLOWSHIP IN EP AND STRUCTURAL INTERVENTIONS</div>`
                     };
-                } else if (val === 'both') {
+                } else if (val === 'tanushree') {
                     return {
-                        name: 'Dr Gurunath Parale & Dr Chinmay Parale',
-                        degrees: 'Parale Healthcare | Cardiology & Structural EP',
-                        fullText: 'Dr Gurunath Parale ,MD,DM, FACC, FCSI. FICP & Dr Chinmay Parale ,MD, DM, MRCP',
-                        html: `<div style="color:#60a5fa; font-weight:bold; font-size:0.96rem;">Dr Gurunath Parale ,MD,DM, FACC, FCSI. FICP & Dr Chinmay Parale ,MD, DM, MRCP</div><div style="color:#94a3b8; font-size:0.82rem; font-weight:600;">PARALE HEALTHCARE - INTERVENTIONAL CARDIOLOGY & EP</div>`
+                        name: 'Dr Tanushree Parale',
+                        degrees: 'MD, DrNB, Gastroenterologist , Fellowship in advanced gastroenetrology interventions',
+                        fullText: 'Dr Tanushree Parale ,MD, DrNB, Gastroenterologist , Fellowship in advanced gastroenetrology interventions',
+                        html: `<div style="color:#60a5fa; font-weight:bold; font-size:0.96rem;">Dr Tanushree Parale ,MD, DrNB, Gastroenterologist</div><div style="color:#94a3b8; font-size:0.82rem; font-weight:600;">FELLOWSHIP IN ADVANCED GASTROENTEROLOGY INTERVENTIONS</div>`
+                    };
+                } else if (val === 'both' || val === 'all') {
+                    return {
+                        name: 'Dr Gurunath Parale, Dr Chinmay Parale & Dr Tanushree Parale',
+                        degrees: 'Spandan Healthcare Specialists',
+                        fullText: 'Dr Gurunath Parale ,MD,DM, FACC | Dr Chinmay Parale ,MD, DM, MRCP | Dr Tanushree Parale ,MD, DrNB',
+                        html: `<div style="color:#60a5fa; font-weight:bold; font-size:0.96rem;">Dr Gurunath Parale | Dr Chinmay Parale | Dr Tanushree Parale</div><div style="color:#94a3b8; font-size:0.82rem; font-weight:600;">SPANDAN HEALTHCARE SPECIALISTS</div>`
                     };
                 } else {
                     return {
@@ -2566,7 +2680,7 @@
                 if (!toast) {
                     toast = document.createElement('div');
                     toast.id = 'appNotificationToast';
-                    toast.style.cssText = 'position:fixed; top:24px; right:24px; z-index:99999; background:#1e293b; color:#f8fafc; border:1px solid #3b82f6; padding:14px 22px; border-radius:12px; box-shadow:0 12px 30px rgba(0,0,0,0.6); font-size:14px; line-height:1.5; max-width:420px; display:flex; align-items:flex-start; gap:12px; opacity:0; transition:all 0.3s ease; transform:translateY(-15px); pointer-events:auto;';
+                    toast.style.cssText = 'position:fixed; top:24px; right:24px; z-index:999999; background:#1e293b; color:#f8fafc; border:1px solid #3b82f6; padding:14px 22px; border-radius:12px; box-shadow:0 12px 30px rgba(0,0,0,0.6); font-size:14px; line-height:1.5; max-width:420px; display:flex; align-items:flex-start; gap:12px; opacity:0; transition:all 0.3s ease; transform:translateY(-15px); pointer-events:auto;';
                     document.body.appendChild(toast);
                 }
                 toast.innerHTML = `
@@ -2585,80 +2699,240 @@
                 }, duration);
             }
 
-            // ---- Utility: WhatsApp share via PDF download & Intent ----
-            async function sharePdfViaWhatsApp(sectionTitle, sectionColor, contentElementId, filename, textForClipboard) {
+            // ---- Utility: Show Interactive WhatsApp PDF Share Modal ----
+            function showWhatsAppShareModal(blob, filename, sectionTitle, textForClipboard) {
+                const modal = document.getElementById('waShareModal');
+                const filenameSpan = document.getElementById('waModalFilename');
+                const mobileShareBtn = document.getElementById('waModalMobileShareBtn');
+                const webBtn = document.getElementById('waModalWebBtn');
+                const copyBtn = document.getElementById('waModalCopyBtn');
+                const redownloadBtn = document.getElementById('waModalRedownloadBtn');
+                const closeBtn = document.getElementById('closeWaModalBtn');
+
+                if (filenameSpan) filenameSpan.textContent = filename;
+
                 const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-                
-                // Pre-open window synchronously to bypass desktop popup blockers before async PDF operations
-                let waWin = null;
-                if (!isMobile) {
-                    try {
-                        waWin = window.open('about:blank', '_blank');
-                    } catch(e) {
-                        console.warn("Pre-opening window blocked:", e);
-                    }
+                const file = new File([blob], filename, { type: 'application/pdf' });
+                const canShareFile = !!(navigator.canShare && navigator.canShare({ files: [file] }));
+
+                // Configure Mobile Share Button label & highlight based on system capability
+                if (canShareFile) {
+                    mobileShareBtn.style.background = 'linear-gradient(135deg, #25D366, #128C7E)';
+                    mobileShareBtn.innerHTML = '📲 Tap to Attach & Share PDF (WhatsApp)';
+                } else {
+                    mobileShareBtn.style.background = '#334155';
+                    mobileShareBtn.innerHTML = '📲 Share PDF via System Share Sheet';
                 }
 
-                try {
-                    // 1. Generate PDF blob
-                    const blob = await generateSectionPdfBlob(sectionTitle, sectionColor, contentElementId, filename);
-                    
-                    // 2. Trigger automatic download of the PDF
-                    const blobUrl = URL.createObjectURL(blob);
-                    const downloadAnchor = document.createElement('a');
-                    downloadAnchor.href = blobUrl;
-                    downloadAnchor.download = filename;
-                    document.body.appendChild(downloadAnchor);
-                    downloadAnchor.click();
-                    document.body.removeChild(downloadAnchor);
+                // Show modal
+                if (modal) modal.style.display = 'flex';
 
-                    // 3. Always copy text to clipboard as backup
-                    try {
-                        await navigator.clipboard.writeText(textForClipboard);
-                    } catch(e) { console.warn("Clipboard copy warning", e); }
+                // Helper to close modal
+                const closeModal = () => { if (modal) modal.style.display = 'none'; };
+                if (closeBtn) closeBtn.onclick = closeModal;
 
-                    // 4. Try Native Web Share API (Chrome Android / iOS Safari / macOS WebShare)
-                    if (navigator.canShare) {
+                // Handle WhatsApp Button Click
+                if (mobileShareBtn) {
+                    mobileShareBtn.style.background = 'linear-gradient(135deg, #25D366, #128C7E)';
+                    mobileShareBtn.innerHTML = '📲 Open WhatsApp Chat & Share PDF';
+                    mobileShareBtn.onclick = () => {
+                        const waMsg = `🏥 SPANDAN CLINICAL AI - ${sectionTitle}\n📄 PDF Medical Report downloaded (${filename}).\n\n👉 Please ATTACH the downloaded PDF report file (${filename}) to this chat.`;
+                        const waUrl = isMobile 
+                            ? `whatsapp://send?text=${encodeURIComponent(waMsg)}` 
+                            : `https://api.whatsapp.com/send?text=${encodeURIComponent(waMsg)}`;
+                        window.open(waUrl, '_blank');
+                        showNotificationToast(`🟢 Opening WhatsApp... Please attach <b>${filename}</b> from Downloads folder`, 7000);
+                        closeModal();
+                    };
+                }
+
+                // Handle Desktop WhatsApp Web Button Click
+                if (webBtn) {
+                    webBtn.onclick = () => {
+                        const waMsg = `🏥 SPANDAN CLINICAL AI - ${sectionTitle}\n📄 PDF Medical Report downloaded (${filename}).\n\n👉 Please ATTACH the downloaded PDF report file (${filename}) to this chat.`;
+                        const waUrl = isMobile 
+                            ? `whatsapp://send?text=${encodeURIComponent(waMsg)}` 
+                            : `https://api.whatsapp.com/send?text=${encodeURIComponent(waMsg)}`;
+                        window.open(waUrl, '_blank');
+                        showNotificationToast(`Opening WhatsApp Web... Drag <b>${filename}</b> from Downloads into WhatsApp chat!`, 8000);
+                        closeModal();
+                    };
+                }
+
+                // Copy Text
+                if (copyBtn) {
+                    copyBtn.onclick = async () => {
+                        try {
+                            await navigator.clipboard.writeText(textForClipboard);
+                            showNotificationToast(`📋 Report text copied to clipboard!`, 3000);
+                        } catch(e) { alert('Could not copy to clipboard.'); }
+                    };
+                }
+
+                // Re-download PDF
+                if (redownloadBtn) {
+                    redownloadBtn.onclick = () => {
+                        const blobUrl = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = blobUrl;
+                        a.download = filename;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        showNotificationToast(`⬇️ Re-downloading ${filename}...`, 3000);
+                    };
+                }
+            }
+
+            // Sanitizes phone number string to WhatsApp standard format (e.g. 9822012345 -> 919822012345)
+            function cleanWhatsAppNumber(phoneStr) {
+                if (!phoneStr) return '';
+                let cleaned = phoneStr.replace(/\D/g, '');
+                if (!cleaned) return '';
+                if (cleaned.length === 10) {
+                    cleaned = '91' + cleaned;
+                }
+                return cleaned;
+            }
+
+            // Global cache for auto-pregenerated PDF blobs
+            window.autoStructuredPdfBlob = null;
+            window.autoPatientPdfBlob = null;
+
+            // Prompt user whether to share PDF with Doctor or Patient, prefill phone number, then launch WhatsApp Chat directly
+            async function promptAndShareWhatsApp({ recipientType, title, filename, contentElementId, sectionColor, textForClipboard }) {
+                const modal = document.getElementById('waPromptModal');
+                const titleEl = document.getElementById('waPromptTitle');
+                const subTitleEl = document.getElementById('waPromptSubtitle');
+                const recipientEl = document.getElementById('waPromptRecipient');
+                const filenameEl = document.getElementById('waPromptFilename');
+                const phoneInputEl = document.getElementById('waPromptPhoneInput');
+                const confirmBtn = document.getElementById('waPromptConfirmBtn');
+                const cancelBtn = document.getElementById('waPromptCancelBtn');
+                const iconEl = document.getElementById('waPromptIcon');
+
+                // Read any pre-entered phone number from UI controls or localStorage
+                let initialPhone = '';
+                if (recipientType === 'doctor') {
+                    const docInput = document.getElementById('doctorWaNumberInput');
+                    initialPhone = (docInput && docInput.value.trim()) || safeStorage.getItem('mediscan_doctor_wa_num') || '';
+                } else {
+                    const ptInput = document.getElementById('patientWaNumberInput');
+                    initialPhone = (ptInput && ptInput.value.trim()) || safeStorage.getItem('mediscan_patient_wa_num') || '';
+                }
+
+                if (phoneInputEl) phoneInputEl.value = initialPhone;
+
+                if (recipientType === 'doctor') {
+                    if (iconEl) iconEl.textContent = '👨‍⚕️';
+                    if (titleEl) titleEl.textContent = 'Share Structured Report with Doctor?';
+                    if (subTitleEl) subTitleEl.textContent = 'Do you want to send the Structured Clinical Report PDF to the Doctor on WhatsApp?';
+                    if (recipientEl) recipientEl.textContent = getDoctorSalutationText();
+                    if (confirmBtn) confirmBtn.innerHTML = '📲 Yes, Open Doctor WhatsApp Chat';
+                } else {
+                    if (iconEl) iconEl.textContent = '🩺';
+                    if (titleEl) titleEl.textContent = 'Share Health Summary with Patient?';
+                    if (subTitleEl) subTitleEl.textContent = 'Do you want to send the Patient Health Summary PDF to the Patient on WhatsApp?';
+                    if (recipientEl) recipientEl.textContent = 'Patient (Health Summary)';
+                    if (confirmBtn) confirmBtn.innerHTML = '📲 Yes, Open Patient WhatsApp Chat';
+                }
+
+                if (filenameEl) filenameEl.textContent = filename;
+                if (modal) modal.style.display = 'flex';
+
+                const closeModal = () => { if (modal) modal.style.display = 'none'; };
+                if (cancelBtn) cancelBtn.onclick = closeModal;
+
+                if (confirmBtn) {
+                    confirmBtn.onclick = async () => {
+                        const enteredPhone = phoneInputEl ? phoneInputEl.value.trim() : '';
+                        const cleanedPhone = cleanWhatsAppNumber(enteredPhone);
+
+                        // Save phone number for future convenience
+                        if (recipientType === 'doctor') {
+                            safeStorage.setItem('mediscan_doctor_wa_num', enteredPhone);
+                            const docInput = document.getElementById('doctorWaNumberInput');
+                            if (docInput) docInput.value = enteredPhone;
+                        } else {
+                            safeStorage.setItem('mediscan_patient_wa_num', enteredPhone);
+                            const ptInput = document.getElementById('patientWaNumberInput');
+                            if (ptInput) ptInput.value = enteredPhone;
+                        }
+
+                        closeModal();
+
+                        // 1. Get or generate PDF Blob
+                        let blob = (recipientType === 'doctor') ? window.autoStructuredPdfBlob : window.autoPatientPdfBlob;
+                        if (!blob) {
+                            showNotificationToast('⏳ Preparing PDF report for WhatsApp...', 3000);
+                            blob = await generateSectionPdfBlob(title, sectionColor, contentElementId, filename);
+                            if (recipientType === 'doctor') window.autoStructuredPdfBlob = blob;
+                            else window.autoPatientPdfBlob = blob;
+                        }
+
+                        // Create File object for mobile native share
                         const file = new File([blob], filename, { type: 'application/pdf' });
-                        if (navigator.canShare({ files: [file] })) {
+                        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+                        // 2. On Mobile (Android / iPhone / iPad): Try native OS Web Share API (attaches PDF directly into WhatsApp)
+                        if (isMobile && navigator.canShare && navigator.canShare({ files: [file] })) {
                             try {
-                                if (waWin && !waWin.closed) waWin.close();
                                 await navigator.share({
                                     files: [file],
-                                    title: 'Spandan Clinical AI Report',
+                                    title: title,
                                     text: textForClipboard.substring(0, 300) + '...'
                                 });
-                                showNotificationToast(`<b>PDF Report Shared!</b><br/><span style="color:#94a3b8; font-size:12px;">Report downloaded as ${filename}</span>`, 4000);
+                                showNotificationToast(`<b>✅ PDF File Shared!</b><br/><span style="color:#94a3b8; font-size:12px;">PDF document attached directly via Mobile Share</span>`, 4000);
                                 return;
                             } catch(e) {
-                                // User cancelled or share failed, fall through to WhatsApp Web URL
+                                if (e.name === 'AbortError') return; // User cancelled share dialog
+                                console.warn("Mobile native share fallback:", e);
                             }
                         }
-                    }
 
-                    // 5. Open WhatsApp Web or URL Intent
-                    const waMsg = `🏥 SPANDAN CLINICAL AI - ${sectionTitle}\n📄 PDF Medical Report downloaded (${filename}).\n\n👉 Please ATTACH the downloaded PDF report file (${filename}) to this chat.`;
-                    const waUrl = isMobile 
-                        ? `whatsapp://send?text=${encodeURIComponent(waMsg)}` 
-                        : `https://api.whatsapp.com/send?text=${encodeURIComponent(waMsg)}`;
-                    
-                    showNotificationToast(`
-                        <b style="color:#22c55e;">📄 PDF Report downloaded (${filename})!</b><br/>
-                        <span style="color:#cbd5e1; font-size:13px;">WhatsApp is opening. Please <b>ATTACH</b> the downloaded PDF file in WhatsApp.</span>
-                    `, 8000);
+                        // 3. Desktop / Fallback: Auto-download PDF file & Open WhatsApp Chat
+                        const blobUrl = URL.createObjectURL(blob);
+                        const downloadAnchor = document.createElement('a');
+                        downloadAnchor.href = blobUrl;
+                        downloadAnchor.download = filename;
+                        document.body.appendChild(downloadAnchor);
+                        downloadAnchor.click();
+                        document.body.removeChild(downloadAnchor);
 
-                    if (waWin && !waWin.closed) {
-                        waWin.location.href = waUrl;
-                    } else {
-                        const newWin = window.open(waUrl, '_blank');
-                        if (!newWin) {
-                            // If popups strictly blocked, redirect current location as ultimate fallback
-                            window.location.href = waUrl;
+                        // Copy report text to clipboard
+                        try {
+                            await navigator.clipboard.writeText(textForClipboard);
+                        } catch(e) { console.warn("Clipboard warning:", e); }
+
+                        // Clean WhatsApp message text
+                        const waMsg = textForClipboard.length > 800 ? textForClipboard.substring(0, 800) + '\n\n[Full report in attached PDF]' : textForClipboard;
+
+                        let waUrl = '';
+                        if (cleanedPhone) {
+                            waUrl = isMobile 
+                                ? `whatsapp://send?phone=${cleanedPhone}&text=${encodeURIComponent(waMsg)}` 
+                                : `https://api.whatsapp.com/send?phone=${cleanedPhone}&text=${encodeURIComponent(waMsg)}`;
+                        } else {
+                            waUrl = isMobile 
+                                ? `whatsapp://send?text=${encodeURIComponent(waMsg)}` 
+                                : `https://api.whatsapp.com/send?text=${encodeURIComponent(waMsg)}`;
                         }
-                    }
-                } catch(err) {
-                    if (waWin && !waWin.closed) waWin.close();
-                    throw err;
+
+                        // Open WhatsApp directly targeting contact's chat
+                        window.open(waUrl, '_blank');
+                        
+                        const displayTarget = cleanedPhone ? `+${cleanedPhone}` : 'WhatsApp';
+                        showNotificationToast(`
+                            <b style="color:#22c55e; font-size:1.02rem;">🟢 WhatsApp Opened for ${displayTarget}!</b><br/>
+                            <div style="margin-top:6px; background:rgba(15,23,42,0.7); padding:8px 10px; border-radius:6px; border:1px solid rgba(59,130,246,0.3); font-size:12px; color:#cbd5e1; line-height:1.5;">
+                                <b>📌 Where to attach PDF in WhatsApp:</b><br/>
+                                1. Click the <b>➕</b> or <b>📎 (Paperclip)</b> icon to the LEFT of your WhatsApp text input box.<br/>
+                                2. Click <b>Document</b> 📄.<br/>
+                                3. Select <b>${filename}</b> from your <b>Downloads</b> folder!<br/>
+                                <span style="color:#60a5fa;">💡 Or drag & drop the downloaded PDF file straight into WhatsApp chat!</span>
+                            </div>
+                        `, 12000);
+                    };
                 }
             }
 
@@ -2729,24 +3003,22 @@
             // STRUCTURED REPORT BUTTONS
             // ================================================================
             document.getElementById('waStructuredBtn').addEventListener('click', async () => {
-                const btn = document.getElementById('waStructuredBtn');
-                btn.innerHTML = '⏳ Preparing...';
-                btn.disabled = true;
-                try {
-                    const doctorSalutation = getDoctorSalutationText();
-                    const sigData = getDoctorSignatureData();
+                const doctorSalutation = getDoctorSalutationText();
+                const sigData = getDoctorSignatureData();
 
-                    const header = `🏥 SPANDAN CLINICAL AI\n${doctorSalutation}\n\n📊 STRUCTURED MEDICAL REPORT ANALYSIS\n====================================\n\n`;
-                    const bodyText = getPlainText('analysisResult');
-                    const signature = `\n\n--\n${sigData.fullText}\nSPANDAN CLINICAL AI`;
+                const header = `🏥 SPANDAN CLINICAL AI\n${doctorSalutation}\n\n📊 STRUCTURED MEDICAL REPORT ANALYSIS\n====================================\n\n`;
+                const bodyText = getPlainText('analysisResult');
+                const signature = `\n\n--\n${sigData.fullText}\nSPANDAN CLINICAL AI`;
 
-                    const text = header + bodyText + signature;
-                    await sharePdfViaWhatsApp('📊 Structured Clinical Report', '#3b82f6', 'analysisResult', 'MediScan_Structured_Report.pdf', text);
-                } catch(e) { 
-                    console.error(e);
-                    alert('Could not share PDF. Please try downloading the PDF instead.'); 
-                }
-                finally { btn.innerHTML = '📲 WhatsApp'; btn.disabled = false; }
+                const text = header + bodyText + signature;
+                await promptAndShareWhatsApp({
+                    recipientType: 'doctor',
+                    title: '📊 Structured Clinical Report',
+                    filename: 'MediScan_Structured_Report.pdf',
+                    contentElementId: 'analysisResult',
+                    sectionColor: '#3b82f6',
+                    textForClipboard: text
+                });
             });
 
             document.getElementById('emailStructuredBtn').addEventListener('click', () => {
@@ -2782,14 +3054,16 @@
             // CLINICAL STORY BUTTONS
             // ================================================================
             document.getElementById('waStoryBtn').addEventListener('click', async () => {
-                const btn = document.getElementById('waStoryBtn');
-                btn.innerHTML = '⏳ Preparing...'; btn.disabled = true;
-                try {
-                    const sigData = getDoctorSignatureData();
-                    const text = `📖 SPANDAN CLINICAL AI - Clinical Care Narrative\n\n` + getPlainText('storyResult') + `\n\n--\n${sigData.fullText}`;
-                    await sharePdfViaWhatsApp('📖 Clinical Care Narrative', '#10b981', 'storyResult', 'MediScan_Clinical_Story.pdf', text);
-                } catch(e) { alert('Could not share. Please try downloading the PDF instead.'); }
-                finally { btn.innerHTML = '📲 WhatsApp'; btn.disabled = false; }
+                const sigData = getDoctorSignatureData();
+                const text = `📖 SPANDAN CLINICAL AI - Clinical Care Narrative\n\n` + getPlainText('storyResult') + `\n\n--\n${sigData.fullText}`;
+                await promptAndShareWhatsApp({
+                    recipientType: 'doctor',
+                    title: '📖 Clinical Care Narrative',
+                    filename: 'MediScan_Clinical_Story.pdf',
+                    contentElementId: 'storyResult',
+                    sectionColor: '#10b981',
+                    textForClipboard: text
+                });
             });
 
             document.getElementById('emailStoryBtn').addEventListener('click', () => {
@@ -2822,35 +3096,37 @@
             // PATIENT SUMMARY BUTTONS
             // ================================================================
             document.getElementById('waSummaryBtn').addEventListener('click', async () => {
-                const btn = document.getElementById('waSummaryBtn');
-                btn.innerHTML = '⏳ Preparing...'; btn.disabled = true;
-                try {
-                    let text = '';
-                    let activeCardId = 'summaryCardEn';
-                    let title = 'MediScan AI - Your Health Summary';
-                    const sigData = getDoctorSignatureData();
-                    
-                    if (!document.getElementById('summaryCardEn').classList.contains('hidden')) {
-                        activeCardId = 'summaryCardEn';
-                        title = '❤️ SPANDAN CLINICAL AI - Your Health Summary';
-                        text = title + '\n\n' + getPlainText(activeCardId) + `\n\n--\n${sigData.fullText}`;
-                    } else if (!document.getElementById('summaryCardMr').classList.contains('hidden')) {
-                        activeCardId = 'summaryCardMr';
-                        title = '❤️ SPANDAN CLINICAL AI - आपला आरोग्य सारांश';
-                        text = title + '\n\n' + getPlainText(activeCardId) + `\n\n--\n${sigData.fullText}`;
-                    } else if (!document.getElementById('summaryCardKn').classList.contains('hidden')) {
-                        activeCardId = 'summaryCardKn';
-                        title = '❤️ SPANDAN CLINICAL AI - ನಿಮ್ಮ ಆರೋಗ್ಯ ಸಾರಾಂಶ';
-                        text = title + '\n\n' + getPlainText(activeCardId) + `\n\n--\n${sigData.fullText}`;
-                    } else if (!document.getElementById('summaryCardHi').classList.contains('hidden')) {
-                        activeCardId = 'summaryCardHi';
-                        title = '❤️ SPANDAN CLINICAL AI - आपका स्वास्थ्य सारांश';
-                        text = title + '\n\n' + getPlainText(activeCardId) + `\n\n--\n${sigData.fullText}`;
-                    }
-                    
-                    await sharePdfViaWhatsApp(title, '#ef4444', activeCardId, 'MediScan_Patient_Summary.pdf', text);
-                } catch(e) { alert('Could not share. Please try downloading the PDF instead.'); }
-                finally { btn.innerHTML = '📲 WhatsApp'; btn.disabled = false; }
+                let text = '';
+                let activeCardId = 'summaryCardEn';
+                let title = 'MediScan AI - Your Health Summary';
+                const sigData = getDoctorSignatureData();
+
+                if (!document.getElementById('summaryCardEn').classList.contains('hidden')) {
+                    activeCardId = 'summaryCardEn';
+                    title = '❤️ SPANDAN CLINICAL AI - Your Health Summary';
+                    text = title + '\n\n' + getPlainText(activeCardId) + `\n\n--\n${sigData.fullText}`;
+                } else if (!document.getElementById('summaryCardMr').classList.contains('hidden')) {
+                    activeCardId = 'summaryCardMr';
+                    title = '❤️ SPANDAN CLINICAL AI - आपला आरोग्य सारांश';
+                    text = title + '\n\n' + getPlainText(activeCardId) + `\n\n--\n${sigData.fullText}`;
+                } else if (!document.getElementById('summaryCardKn').classList.contains('hidden')) {
+                    activeCardId = 'summaryCardKn';
+                    title = '❤️ SPANDAN CLINICAL AI - ನಿಮ್ಮ ಆರೋಗ್ಯ ಸಾರಾಂಶ';
+                    text = title + '\n\n' + getPlainText(activeCardId) + `\n\n--\n${sigData.fullText}`;
+                } else if (!document.getElementById('summaryCardHi').classList.contains('hidden')) {
+                    activeCardId = 'summaryCardHi';
+                    title = '❤️ SPANDAN CLINICAL AI - आपका स्वास्थ्य सारांश';
+                    text = title + '\n\n' + getPlainText(activeCardId) + `\n\n--\n${sigData.fullText}`;
+                }
+
+                await promptAndShareWhatsApp({
+                    recipientType: 'patient',
+                    title: title,
+                    filename: 'MediScan_Patient_Summary.pdf',
+                    contentElementId: activeCardId,
+                    sectionColor: '#ef4444',
+                    textForClipboard: text
+                });
             });
 
             document.getElementById('emailSummaryBtn').addEventListener('click', () => {
@@ -3143,12 +3419,11 @@ Total Pages Extracted and Analyzed: ${currentFiles.length} of ${currentFiles.len
                     // Build the key pool: if user has a custom key, try it first, then fall back to default keys seamlessly
                     const keyPool = usingCustomKey ? [apiKey, ...DEFAULT_API_KEY_POOL] : DEFAULT_API_KEY_POOL;
 
-                    // Models confirmed working with Gemini API
+                    // Active production models supported by Google Gemini API
                     const MODELS_TO_TRY = [
-                        'gemini-3.5-flash',
-                        'gemini-3.1-flash-lite',
                         'gemini-2.5-flash',
                         'gemini-3.6-flash',
+                        'gemini-3.5-flash',
                         'gemini-flash-latest'
                     ];
 
@@ -3197,19 +3472,23 @@ Total Pages Extracted and Analyzed: ${currentFiles.length} of ${currentFiles.len
                                 lastError = (errorData.error && errorData.error.message) || `HTTP ${response.status}`;
                                 console.warn(`Key[${ki}] ${model} failed (${response.status}): ${lastError}`);
 
-                                // Check for rate limiting / quota
-                                if (response.status === 429 || lastError.toLowerCase().includes('quota') || lastError.toLowerCase().includes('rate limit') || lastError.toLowerCase().includes('resource_exhausted')) {
-                                    isRateLimited = true;
+                                const lowerErr = lastError.toLowerCase();
+                                const isKeyErr = response.status === 400 || response.status === 401 || response.status === 403 ||
+                                                 lowerErr.includes('key') || lowerErr.includes('unauthenticated') || 
+                                                 lowerErr.includes('invalid') || lowerErr.includes('leaked') || lowerErr.includes('permission');
+
+                                if (isKeyErr) {
+                                    isKeyInvalid = true;
+                                    break; // Stop model loop for invalid key immediately
                                 }
 
-                                // Check for invalid/revoked/unauthenticated API key — stop looping models for this key immediately!
-                                if (response.status === 401 || response.status === 403 || lastError.toLowerCase().includes('key') || lastError.toLowerCase().includes('unauthenticated') || lastError.toLowerCase().includes('leaked')) {
-                                    isKeyInvalid = true;
-                                    break; // Skip remaining models for this invalid key
+                                if (response.status === 429 || lowerErr.includes('quota') || lowerErr.includes('rate limit') || lowerErr.includes('resource_exhausted')) {
+                                    isRateLimited = true;
+                                    break; // Stop model loop for rate-limited key immediately
                                 }
 
                                 // Model not available — skip to next model
-                                if (response.status === 404 || lastError.toLowerCase().includes('not found') || lastError.toLowerCase().includes('does not exist')) {
+                                if (response.status === 404 || lowerErr.includes('not found') || lowerErr.includes('does not exist')) {
                                     continue;
                                 }
 
@@ -3411,6 +3690,23 @@ Total Pages Extracted and Analyzed: ${currentFiles.length} of ${currentFiles.len
 
                     analysisStatus.textContent = `✅ Extracted & analyzed all ${currentFiles.length} page(s) via ${selectedModel}! Switch tabs to view Clinical Story or Patient Summary in English, Marathi, Kannada, or Hindi!`;
                     downloadActions.classList.remove('hidden');
+
+                    // Background auto PDF pre-generation of BOTH Structured Report and Patient Summary PDFs
+                    setTimeout(async () => {
+                        try {
+                            window.autoStructuredPdfBlob = await generateSectionPdfBlob('📊 Structured Clinical Report', '#3b82f6', 'analysisResult', 'MediScan_Structured_Report.pdf');
+                            let activeCardId = 'summaryCardEn';
+                            if (!document.getElementById('summaryCardEn').classList.contains('hidden')) activeCardId = 'summaryCardEn';
+                            else if (!document.getElementById('summaryCardMr').classList.contains('hidden')) activeCardId = 'summaryCardMr';
+                            else if (!document.getElementById('summaryCardKn').classList.contains('hidden')) activeCardId = 'summaryCardKn';
+                            else if (!document.getElementById('summaryCardHi').classList.contains('hidden')) activeCardId = 'summaryCardHi';
+
+                            window.autoPatientPdfBlob = await generateSectionPdfBlob('❤️ Patient Health Summary', '#ef4444', activeCardId, 'MediScan_Patient_Summary.pdf');
+                            console.log("Background pre-generation of Structured & Patient PDFs complete!");
+                        } catch(e) {
+                            console.warn("Auto PDF pre-generation notice:", e);
+                        }
+                    }, 400);
 
                 } catch (error) {
                     console.error("AI Analysis Error:", error);
