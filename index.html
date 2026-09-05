@@ -2019,7 +2019,7 @@
                 });
             });
 
-            async function compressImage(file, maxDimension = 1000, quality = 0.70) {
+            async function compressImage(file, maxDimension = 2200, quality = 0.92) {
                 if (file && file._isCompressed) return file;
                 return new Promise((resolve, reject) => {
                     const img = new Image();
@@ -2071,7 +2071,7 @@
                     let targetFile = file;
                     try {
                         if (file && !file._isCompressed && typeof compressImage === 'function') {
-                            targetFile = await compressImage(file, 1000, 0.70);
+                            targetFile = await compressImage(file, 2200, 0.92);
                         }
                     } catch (e) {
                         console.warn("Fast compress fallback:", e);
@@ -2104,7 +2104,7 @@
 
                     if (isImg) {
                         try {
-                            const compressed = await compressImage(file, 1400, 0.80);
+                            const compressed = await compressImage(file, 2200, 0.92);
                             return [compressed];
                         } catch (e) {
                             return [file];
@@ -2117,14 +2117,14 @@
 
                             for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
                                 const page = await pdf.getPage(pageNum);
-                                const viewport = page.getViewport({ scale: 1.5 });
+                                const viewport = page.getViewport({ scale: 2.0 });
                                 const canvas = document.createElement('canvas');
                                 canvas.width = viewport.width;
                                 canvas.height = viewport.height;
                                 const ctx = canvas.getContext('2d');
                                 await page.render({ canvasContext: ctx, viewport: viewport }).promise;
 
-                                const pageBlob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', 0.80));
+                                const pageBlob = await new Promise(r => canvas.toBlob(r, 'image/jpeg', 0.92));
                                 canvas.width = 1; canvas.height = 1; // Release memory
                                 if (pageBlob) {
                                     const pageFile = new File([pageBlob], `${file.name.replace('.pdf', '')}_page_${pageNum}.jpg`, {
@@ -2870,11 +2870,41 @@
                             else window.autoPatientPdfBlob = blob;
                         }
 
-                        // Create File object for mobile native share
                         const file = new File([blob], filename, { type: 'application/pdf' });
                         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                        const waMsg = textForClipboard.length > 800 ? textForClipboard.substring(0, 800) + '\n\n[Full report in attached PDF]' : textForClipboard;
 
-                        // 2. On Mobile (Android / iPhone / iPad): Try native OS Web Share API (attaches PDF directly into WhatsApp)
+                        // 2. Direct WhatsApp Link when Phone Number is Entered (bypasses contact search and opens chat with ONLY "Send" button)
+                        if (cleanedPhone) {
+                            // Auto-download PDF file to Downloads folder
+                            const blobUrl = URL.createObjectURL(blob);
+                            const downloadAnchor = document.createElement('a');
+                            downloadAnchor.href = blobUrl;
+                            downloadAnchor.download = filename;
+                            document.body.appendChild(downloadAnchor);
+                            downloadAnchor.click();
+                            document.body.removeChild(downloadAnchor);
+
+                            try { await navigator.clipboard.writeText(textForClipboard); } catch(e) {}
+
+                            // Direct WhatsApp deep link to target phone number
+                            const waUrl = isMobile 
+                                ? `whatsapp://send?phone=${cleanedPhone}&text=${encodeURIComponent(waMsg)}` 
+                                : `https://api.whatsapp.com/send?phone=${cleanedPhone}&text=${encodeURIComponent(waMsg)}`;
+
+                            window.open(waUrl, '_blank');
+                            
+                            showNotificationToast(`
+                                <b style="color:#22c55e; font-size:1.02rem;">🟢 WhatsApp Opened (+${cleanedPhone})!</b><br/>
+                                <div style="margin-top:4px; font-size:12px; color:#cbd5e1;">
+                                    Chat opened directly to <b>+${cleanedPhone}</b> with pre-filled message & <b>Send</b> button.<br/>
+                                    📄 PDF saved in Downloads (<b>${filename}</b>) to attach if needed.
+                                </div>
+                            `, 9000);
+                            return;
+                        }
+
+                        // 3. Fallback when NO phone number is entered
                         if (isMobile && navigator.canShare && navigator.canShare({ files: [file] })) {
                             try {
                                 await navigator.share({
@@ -2885,12 +2915,11 @@
                                 showNotificationToast(`<b>✅ PDF File Shared!</b><br/><span style="color:#94a3b8; font-size:12px;">PDF document attached directly via Mobile Share</span>`, 4000);
                                 return;
                             } catch(e) {
-                                if (e.name === 'AbortError') return; // User cancelled share dialog
-                                console.warn("Mobile native share fallback:", e);
+                                if (e.name === 'AbortError') return;
                             }
                         }
 
-                        // 3. Desktop / Fallback: Auto-download PDF file & Open WhatsApp Chat
+                        // Generic WhatsApp intent
                         const blobUrl = URL.createObjectURL(blob);
                         const downloadAnchor = document.createElement('a');
                         downloadAnchor.href = blobUrl;
@@ -2899,37 +2928,20 @@
                         downloadAnchor.click();
                         document.body.removeChild(downloadAnchor);
 
-                        // Copy report text to clipboard
-                        try {
-                            await navigator.clipboard.writeText(textForClipboard);
-                        } catch(e) { console.warn("Clipboard warning:", e); }
+                        try { await navigator.clipboard.writeText(textForClipboard); } catch(e) {}
 
-                        // Clean WhatsApp message text
-                        const waMsg = textForClipboard.length > 800 ? textForClipboard.substring(0, 800) + '\n\n[Full report in attached PDF]' : textForClipboard;
+                        const waUrl = isMobile 
+                            ? `whatsapp://send?text=${encodeURIComponent(waMsg)}` 
+                            : `https://api.whatsapp.com/send?text=${encodeURIComponent(waMsg)}`;
 
-                        let waUrl = '';
-                        if (cleanedPhone) {
-                            waUrl = isMobile 
-                                ? `whatsapp://send?phone=${cleanedPhone}&text=${encodeURIComponent(waMsg)}` 
-                                : `https://api.whatsapp.com/send?phone=${cleanedPhone}&text=${encodeURIComponent(waMsg)}`;
-                        } else {
-                            waUrl = isMobile 
-                                ? `whatsapp://send?text=${encodeURIComponent(waMsg)}` 
-                                : `https://api.whatsapp.com/send?text=${encodeURIComponent(waMsg)}`;
-                        }
-
-                        // Open WhatsApp directly targeting contact's chat
                         window.open(waUrl, '_blank');
-                        
-                        const displayTarget = cleanedPhone ? `+${cleanedPhone}` : 'WhatsApp';
                         showNotificationToast(`
-                            <b style="color:#22c55e; font-size:1.02rem;">🟢 WhatsApp Opened for ${displayTarget}!</b><br/>
+                            <b style="color:#22c55e; font-size:1.02rem;">🟢 WhatsApp Opened!</b><br/>
                             <div style="margin-top:6px; background:rgba(15,23,42,0.7); padding:8px 10px; border-radius:6px; border:1px solid rgba(59,130,246,0.3); font-size:12px; color:#cbd5e1; line-height:1.5;">
                                 <b>📌 Where to attach PDF in WhatsApp:</b><br/>
                                 1. Click the <b>➕</b> or <b>📎 (Paperclip)</b> icon to the LEFT of your WhatsApp text input box.<br/>
                                 2. Click <b>Document</b> 📄.<br/>
-                                3. Select <b>${filename}</b> from your <b>Downloads</b> folder!<br/>
-                                <span style="color:#60a5fa;">💡 Or drag & drop the downloaded PDF file straight into WhatsApp chat!</span>
+                                3. Select <b>${filename}</b> from your <b>Downloads</b> folder!
                             </div>
                         `, 12000);
                     };
