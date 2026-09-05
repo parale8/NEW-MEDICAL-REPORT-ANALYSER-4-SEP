@@ -2447,13 +2447,21 @@
                 return name ? `${prefix} ${name}` : `${prefix} .....................`;
             }
 
-            function getDoctorCommentsHtml() {
+            function getDoctorCommentsHtml(isPdf = false) {
                 const commentsInput = document.getElementById('doctorCommentsInput');
                 const val = commentsInput ? commentsInput.value.trim() : '';
                 if (!val) return '';
+
+                if (isPdf) {
+                    return `<div class="doctor-comments-box" style="margin-top: 25px; margin-bottom: 15px; padding: 14px 18px; background: #eff6ff; border-left: 4px solid #1e40af; border-radius: 8px; font-size: 0.94rem; color: #0f172a; page-break-inside: avoid; break-inside: avoid;">
+                        <strong style="color: #1e40af; display: block; margin-bottom: 6px; font-size: 0.95rem;">💬 Doctor's Remarks / Clinical Comments:</strong>
+                        <div style="white-space: pre-wrap; line-height: 1.6; color: #0f172a;">${val}</div>
+                    </div>`;
+                }
+
                 return `<div class="doctor-comments-box" style="margin-top: 25px; margin-bottom: 15px; padding: 14px 18px; background: rgba(59, 130, 246, 0.1); border-left: 4px solid #3b82f6; border-radius: 8px; font-size: 0.94rem; color: #f1f5f9;">
                     <strong style="color: #60a5fa; display: block; margin-bottom: 6px; font-size: 0.95rem;">💬 Doctor's Remarks / Clinical Comments:</strong>
-                    <div style="white-space: pre-wrap; line-height: 1.6;">${val}</div>
+                    <div style="white-space: pre-wrap; line-height: 1.6; color: #f8fafc;">${val}</div>
                 </div>`;
             }
 
@@ -2465,7 +2473,20 @@
 
             function getDoctorSignatureData() {
                 const sigSelect = document.getElementById('doctorSignatureSelect');
+                const docInput = document.getElementById('doctorNameInput');
+                const customName = docInput ? docInput.value.trim() : '';
                 const val = sigSelect ? sigSelect.value : 'gurunath';
+
+                if (customName) {
+                    return {
+                        name: customName,
+                        degrees: 'Spandan Healthcare Specialist',
+                        fullText: `${customName} | Spandan Healthcare Specialist`,
+                        html: `<div style="color:#60a5fa; font-weight:bold; font-size:0.98rem;">${customName}</div><div style="color:#94a3b8; font-size:0.84rem; font-weight:600;">SPANDAN HEALTHCARE SPECIALIST</div>`,
+                        pdfHtml: `<div style="color:#1e3a8a; font-weight:bold; font-size:1.05rem;">${customName}</div><div style="color:#334155; font-size:0.88rem; font-weight:700; margin-top:2px;">SPANDAN HEALTHCARE SPECIALIST</div>`
+                    };
+                }
+
                 if (val === 'chinmay') {
                     return {
                         name: 'Dr Chinmay Parale',
@@ -2643,7 +2664,7 @@
 
                 const doctorSalutation = getDoctorSalutationText();
                 const sigData = getDoctorSignatureData();
-                const commentsHtml = getDoctorCommentsHtml();
+                const commentsPdfHtml = getDoctorCommentsHtml(true);
 
                 let headerExtra = '';
                 if (contentElementId === 'analysisResult') {
@@ -2689,11 +2710,11 @@
 
                 container.appendChild(content);
 
-                // Add Doctor Remarks Box (if present)
-                if (commentsHtml) {
+                // Add Doctor Remarks Box (if present, formatted for high contrast light mode)
+                if (commentsPdfHtml) {
                     const commentsWrapper = document.createElement('div');
                     commentsWrapper.style.cssText = 'page-break-inside: avoid; break-inside: avoid; margin-top: 20px;';
-                    commentsWrapper.innerHTML = commentsHtml;
+                    commentsWrapper.innerHTML = commentsPdfHtml;
                     container.appendChild(commentsWrapper);
                 }
 
@@ -2975,23 +2996,7 @@
                         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
                         const waMsg = textForClipboard.length > 800 ? textForClipboard.substring(0, 800) + '\n\n[Full report in attached PDF]' : textForClipboard;
 
-                        // 2. On Mobile (Android / iPhone / iPad): Try Native Mobile File Share API (Attaches PDF file directly into Mobile WhatsApp)
-                        if (isMobile && navigator.canShare && navigator.canShare({ files: [file] })) {
-                            try {
-                                await navigator.share({
-                                    files: [file],
-                                    title: title,
-                                    text: (cleanedPhone ? `Target Contact: +${cleanedPhone}\n\n` : '') + textForClipboard.substring(0, 300) + '...'
-                                });
-                                showNotificationToast(`<b>✅ PDF File Attached & Shared!</b><br/><span style="color:#94a3b8; font-size:12px;">PDF document attached directly via Mobile Share</span>`, 4000);
-                                return;
-                            } catch(e) {
-                                if (e.name === 'AbortError') return; // User cancelled share dialog
-                                console.warn("Mobile native share fallback:", e);
-                            }
-                        }
-
-                        // 3. Desktop / Fallback: Direct WhatsApp Link when Phone Number is Entered
+                        // 2. Direct WhatsApp Link when Phone Number is Entered (Opens chat for entered phone number directly without contact searching)
                         if (cleanedPhone) {
                             // Auto-download PDF file to Downloads folder
                             const blobUrl = URL.createObjectURL(blob);
@@ -3011,16 +3016,16 @@
                             window.open(waUrl, '_blank');
                             
                             showNotificationToast(`
-                                <b style="color:#22c55e; font-size:1.02rem;">🟢 WhatsApp Opened (+${cleanedPhone})!</b><br/>
+                                <b style="color:#22c55e; font-size:1.02rem;">🟢 WhatsApp Opened for +${cleanedPhone}!</b><br/>
                                 <div style="margin-top:4px; font-size:12px; color:#cbd5e1;">
-                                    Chat opened directly to <b>+${cleanedPhone}</b> with pre-filled message.<br/>
-                                    📄 PDF saved in Downloads (<b>${filename}</b>) — click 📎 Attach Document in WhatsApp!
+                                    Opened chat directly to <b>+${cleanedPhone}</b> with pre-filled report text.<br/>
+                                    📄 PDF saved in Downloads (<b>${filename}</b>) — tap 📎 in chat to attach if desired!
                                 </div>
                             `, 9000);
                             return;
                         }
 
-                        // 3. Fallback when NO phone number is entered
+                        // 3. Fallback when NO phone number is entered: Use Mobile Native File Share API
                         if (isMobile && navigator.canShare && navigator.canShare({ files: [file] })) {
                             try {
                                 await navigator.share({
@@ -3031,7 +3036,8 @@
                                 showNotificationToast(`<b>✅ PDF File Shared!</b><br/><span style="color:#94a3b8; font-size:12px;">PDF document attached directly via Mobile Share</span>`, 4000);
                                 return;
                             } catch(e) {
-                                if (e.name === 'AbortError') return;
+                                if (e.name === 'AbortError') return; // User cancelled share dialog
+                                console.warn("Mobile native share fallback:", e);
                             }
                         }
 
@@ -3133,10 +3139,11 @@
             document.getElementById('waStructuredBtn').addEventListener('click', async () => {
                 const doctorSalutation = getDoctorSalutationText();
                 const sigData = getDoctorSignatureData();
+                const commentsText = getDoctorCommentsText();
 
                 const header = `🏥 SPANDAN CLINICAL AI\n${doctorSalutation}\n\n📊 STRUCTURED MEDICAL REPORT ANALYSIS\n====================================\n\n`;
                 const bodyText = getPlainText('analysisResult');
-                const signature = `\n\n--\n${sigData.fullText}\nSPANDAN CLINICAL AI`;
+                const signature = (commentsText ? commentsText + '\n\n' : '') + `--\n${sigData.fullText}\nSPANDAN CLINICAL AI`;
 
                 const text = header + bodyText + signature;
                 await promptAndShareWhatsApp({
@@ -3153,9 +3160,10 @@
                 const btn = document.getElementById('emailStructuredBtn');
                 const doctorSalutation = getDoctorSalutationText();
                 const sigData = getDoctorSignatureData();
+                const commentsText = getDoctorCommentsText();
 
                 const text = getPlainText('analysisResult');
-                const fullBody = `🏥 SPANDAN CLINICAL AI\n${doctorSalutation}\n\nSTRUCTURED CLINICAL REPORT\n============================\n\n` + text + `\n\n--\n${sigData.fullText}\nSPANDAN CLINICAL AI`;
+                const fullBody = `🏥 SPANDAN CLINICAL AI\n${doctorSalutation}\n\nSTRUCTURED CLINICAL REPORT\n============================\n\n` + text + (commentsText ? commentsText + '\n\n' : '') + `\n\n--\n${sigData.fullText}\nSPANDAN CLINICAL AI`;
                 emailViaMailto('MediScan AI - Structured Clinical Report', fullBody, btn);
             });
 
@@ -3183,7 +3191,8 @@
             // ================================================================
             document.getElementById('waStoryBtn').addEventListener('click', async () => {
                 const sigData = getDoctorSignatureData();
-                const text = `📖 SPANDAN CLINICAL AI - Clinical Care Narrative\n\n` + getPlainText('storyResult') + `\n\n--\n${sigData.fullText}`;
+                const commentsText = getDoctorCommentsText();
+                const text = `📖 SPANDAN CLINICAL AI - Clinical Care Narrative\n\n` + getPlainText('storyResult') + (commentsText ? commentsText + '\n\n' : '') + `\n\n--\n${sigData.fullText}`;
                 await promptAndShareWhatsApp({
                     recipientType: 'doctor',
                     title: '📖 Clinical Care Narrative',
@@ -3197,8 +3206,9 @@
             document.getElementById('emailStoryBtn').addEventListener('click', () => {
                 const btn = document.getElementById('emailStoryBtn');
                 const sigData = getDoctorSignatureData();
+                const commentsText = getDoctorCommentsText();
                 const text = getPlainText('storyResult');
-                emailViaMailto('MediScan AI – Clinical Care Narrative', '📖 CLINICAL CARE NARRATIVE\n=========================\n\n' + text + `\n\n--\n${sigData.fullText}`, btn);
+                emailViaMailto('MediScan AI – Clinical Care Narrative', '📖 CLINICAL CARE NARRATIVE\n=========================\n\n' + text + (commentsText ? commentsText + '\n\n' : '') + `\n\n--\n${sigData.fullText}`, btn);
             });
 
             document.getElementById('pdfStoryBtn').addEventListener('click', async () => {
@@ -3228,23 +3238,24 @@
                 let activeCardId = 'summaryCardEn';
                 let title = 'MediScan AI - Your Health Summary';
                 const sigData = getDoctorSignatureData();
+                const commentsText = getDoctorCommentsText();
 
                 if (!document.getElementById('summaryCardEn').classList.contains('hidden')) {
                     activeCardId = 'summaryCardEn';
                     title = '❤️ SPANDAN CLINICAL AI - Your Health Summary';
-                    text = title + '\n\n' + getPlainText(activeCardId) + `\n\n--\n${sigData.fullText}`;
+                    text = title + '\n\n' + getPlainText(activeCardId) + (commentsText ? commentsText + '\n\n' : '') + `\n\n--\n${sigData.fullText}`;
                 } else if (!document.getElementById('summaryCardMr').classList.contains('hidden')) {
                     activeCardId = 'summaryCardMr';
                     title = '❤️ SPANDAN CLINICAL AI - आपला आरोग्य सारांश';
-                    text = title + '\n\n' + getPlainText(activeCardId) + `\n\n--\n${sigData.fullText}`;
+                    text = title + '\n\n' + getPlainText(activeCardId) + (commentsText ? commentsText + '\n\n' : '') + `\n\n--\n${sigData.fullText}`;
                 } else if (!document.getElementById('summaryCardKn').classList.contains('hidden')) {
                     activeCardId = 'summaryCardKn';
                     title = '❤️ SPANDAN CLINICAL AI - ನಿಮ್ಮ ಆರೋಗ್ಯ ಸಾರಾಂಶ';
-                    text = title + '\n\n' + getPlainText(activeCardId) + `\n\n--\n${sigData.fullText}`;
+                    text = title + '\n\n' + getPlainText(activeCardId) + (commentsText ? commentsText + '\n\n' : '') + `\n\n--\n${sigData.fullText}`;
                 } else if (!document.getElementById('summaryCardHi').classList.contains('hidden')) {
                     activeCardId = 'summaryCardHi';
                     title = '❤️ SPANDAN CLINICAL AI - आपका स्वास्थ्य सारांश';
-                    text = title + '\n\n' + getPlainText(activeCardId) + `\n\n--\n${sigData.fullText}`;
+                    text = title + '\n\n' + getPlainText(activeCardId) + (commentsText ? commentsText + '\n\n' : '') + `\n\n--\n${sigData.fullText}`;
                 }
 
                 await promptAndShareWhatsApp({
