@@ -1273,9 +1273,12 @@
             <!-- Action Buttons -->
             <div style="display:flex; flex-direction:column; gap:0.75rem;">
                 <button id="waPromptConfirmBtn" style="width:100%; padding:0.9rem 1.2rem; background:linear-gradient(135deg, #25D366, #128C7E); color:white; font-weight:700; border:none; border-radius:12px; font-size:1.02rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.6rem; box-shadow:0 4px 16px rgba(37,211,102,0.4);">
-                    📲 Yes, Open WhatsApp Chat
+                    💬 Open WhatsApp Direct Chat
                 </button>
-                <button id="waPromptCancelBtn" style="width:100%; padding:0.7rem 1rem; background:transparent; color:#94a3b8; border:1px solid #334155; border-radius:10px; font-size:0.9rem; cursor:pointer;">
+                <button id="waPromptSharePdfBtn" style="width:100%; padding:0.85rem 1.2rem; background:linear-gradient(135deg, #3b82f6, #1d4ed8); color:white; font-weight:700; border:none; border-radius:12px; font-size:0.95rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.6rem; box-shadow:0 4px 16px rgba(59,130,246,0.3);">
+                    📎 Attach & Share PDF Document File
+                </button>
+                <button id="waPromptCancelBtn" style="width:100%; padding:0.65rem 1rem; background:transparent; color:#94a3b8; border:1px solid #334155; border-radius:10px; font-size:0.88rem; cursor:pointer;">
                     ❌ Cancel
                 </button>
             </div>
@@ -1576,6 +1579,26 @@
                 }
             }
 
+            // Auto-load and auto-save doctor & patient WhatsApp numbers from preferences for instant reuse
+            const docWaInput = document.getElementById('doctorWaNumberInput');
+            const ptWaInput = document.getElementById('patientWaNumberInput');
+
+            const savedDocWa = safeStorage.getItem('mediscan_doctor_wa_num');
+            const savedPtWa = safeStorage.getItem('mediscan_patient_wa_num');
+
+            if (docWaInput && savedDocWa) docWaInput.value = savedDocWa;
+            if (ptWaInput && savedPtWa) ptWaInput.value = savedPtWa;
+
+            if (docWaInput) {
+                docWaInput.addEventListener('input', () => {
+                    safeStorage.setItem('mediscan_doctor_wa_num', docWaInput.value.trim());
+                });
+            }
+            if (ptWaInput) {
+                ptWaInput.addEventListener('input', () => {
+                    safeStorage.setItem('mediscan_patient_wa_num', ptWaInput.value.trim());
+                });
+            }
 
             let currentFiles = [];
             let rawAnalysisText = "";
@@ -2901,7 +2924,7 @@
                         document.body.appendChild(a);
                         a.click();
                         document.body.removeChild(a);
-                        showNotificationToast(`⬇️ Re-downloading ${filename}...`, 3000);
+                showNotificationToast(`⬇️ Re-downloading ${filename}...`, 3000);
                     };
                 }
             }
@@ -2930,6 +2953,7 @@
                 const filenameEl = document.getElementById('waPromptFilename');
                 const phoneInputEl = document.getElementById('waPromptPhoneInput');
                 const confirmBtn = document.getElementById('waPromptConfirmBtn');
+                const sharePdfBtn = document.getElementById('waPromptSharePdfBtn');
                 const cancelBtn = document.getElementById('waPromptCancelBtn');
                 const iconEl = document.getElementById('waPromptIcon');
 
@@ -2948,15 +2972,15 @@
                 if (recipientType === 'doctor') {
                     if (iconEl) iconEl.textContent = '👨‍⚕️';
                     if (titleEl) titleEl.textContent = 'Share Structured Report with Doctor?';
-                    if (subTitleEl) subTitleEl.textContent = 'Do you want to send the Structured Clinical Report PDF to the Doctor on WhatsApp?';
+                    if (subTitleEl) subTitleEl.textContent = 'Choose how you want to send the report on WhatsApp:';
                     if (recipientEl) recipientEl.textContent = getDoctorSalutationText();
-                    if (confirmBtn) confirmBtn.innerHTML = '📲 Yes, Open Doctor WhatsApp Chat';
+                    if (confirmBtn) confirmBtn.innerHTML = '💬 Open WhatsApp Direct Chat';
                 } else {
                     if (iconEl) iconEl.textContent = '🩺';
                     if (titleEl) titleEl.textContent = 'Share Health Summary with Patient?';
-                    if (subTitleEl) subTitleEl.textContent = 'Do you want to send the Patient Health Summary PDF to the Patient on WhatsApp?';
+                    if (subTitleEl) subTitleEl.textContent = 'Choose how you want to send the summary on WhatsApp:';
                     if (recipientEl) recipientEl.textContent = 'Patient (Health Summary)';
-                    if (confirmBtn) confirmBtn.innerHTML = '📲 Yes, Open Patient WhatsApp Chat';
+                    if (confirmBtn) confirmBtn.innerHTML = '💬 Open WhatsApp Direct Chat';
                 }
 
                 if (filenameEl) filenameEl.textContent = filename;
@@ -2965,83 +2989,42 @@
                 const closeModal = () => { if (modal) modal.style.display = 'none'; };
                 if (cancelBtn) cancelBtn.onclick = closeModal;
 
+                const savePhone = () => {
+                    const enteredPhone = phoneInputEl ? phoneInputEl.value.trim() : '';
+                    if (recipientType === 'doctor') {
+                        safeStorage.setItem('mediscan_doctor_wa_num', enteredPhone);
+                        const docInput = document.getElementById('doctorWaNumberInput');
+                        if (docInput) docInput.value = enteredPhone;
+                    } else {
+                        safeStorage.setItem('mediscan_patient_wa_num', enteredPhone);
+                        const ptInput = document.getElementById('patientWaNumberInput');
+                        if (ptInput) ptInput.value = enteredPhone;
+                    }
+                    return cleanWhatsAppNumber(enteredPhone);
+                };
+
+                const getPdfBlob = async () => {
+                    let blob = (recipientType === 'doctor') ? window.autoStructuredPdfBlob : window.autoPatientPdfBlob;
+                    if (!blob) {
+                        showNotificationToast('⏳ Preparing PDF report...', 3000);
+                        blob = await generateSectionPdfBlob(title, sectionColor, contentElementId, filename);
+                        if (recipientType === 'doctor') window.autoStructuredPdfBlob = blob;
+                        else window.autoPatientPdfBlob = blob;
+                    }
+                    return blob;
+                };
+
+                // OPTION 1: Direct WhatsApp Chat (+91...)
                 if (confirmBtn) {
                     confirmBtn.onclick = async () => {
-                        const enteredPhone = phoneInputEl ? phoneInputEl.value.trim() : '';
-                        const cleanedPhone = cleanWhatsAppNumber(enteredPhone);
-
-                        // Save phone number for future convenience
-                        if (recipientType === 'doctor') {
-                            safeStorage.setItem('mediscan_doctor_wa_num', enteredPhone);
-                            const docInput = document.getElementById('doctorWaNumberInput');
-                            if (docInput) docInput.value = enteredPhone;
-                        } else {
-                            safeStorage.setItem('mediscan_patient_wa_num', enteredPhone);
-                            const ptInput = document.getElementById('patientWaNumberInput');
-                            if (ptInput) ptInput.value = enteredPhone;
-                        }
-
+                        const cleanedPhone = savePhone();
                         closeModal();
 
-                        // 1. Get or generate PDF Blob
-                        let blob = (recipientType === 'doctor') ? window.autoStructuredPdfBlob : window.autoPatientPdfBlob;
-                        if (!blob) {
-                            showNotificationToast('⏳ Preparing PDF report for WhatsApp...', 3000);
-                            blob = await generateSectionPdfBlob(title, sectionColor, contentElementId, filename);
-                            if (recipientType === 'doctor') window.autoStructuredPdfBlob = blob;
-                            else window.autoPatientPdfBlob = blob;
-                        }
-
-                        const file = new File([blob], filename, { type: 'application/pdf' });
+                        const blob = await getPdfBlob();
                         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
                         const waMsg = textForClipboard.length > 800 ? textForClipboard.substring(0, 800) + '\n\n[Full report in attached PDF]' : textForClipboard;
 
-                        // 2. Direct WhatsApp Link when Phone Number is Entered (Opens chat for entered phone number directly without contact searching)
-                        if (cleanedPhone) {
-                            // Auto-download PDF file to Downloads folder
-                            const blobUrl = URL.createObjectURL(blob);
-                            const downloadAnchor = document.createElement('a');
-                            downloadAnchor.href = blobUrl;
-                            downloadAnchor.download = filename;
-                            document.body.appendChild(downloadAnchor);
-                            downloadAnchor.click();
-                            document.body.removeChild(downloadAnchor);
-
-                            try { await navigator.clipboard.writeText(textForClipboard); } catch(e) {}
-
-                            const waUrl = isMobile 
-                                ? `whatsapp://send?phone=${cleanedPhone}&text=${encodeURIComponent(waMsg)}` 
-                                : `https://api.whatsapp.com/send?phone=${cleanedPhone}&text=${encodeURIComponent(waMsg)}`;
-
-                            window.open(waUrl, '_blank');
-                            
-                            showNotificationToast(`
-                                <b style="color:#22c55e; font-size:1.02rem;">🟢 WhatsApp Opened for +${cleanedPhone}!</b><br/>
-                                <div style="margin-top:4px; font-size:12px; color:#cbd5e1;">
-                                    Opened chat directly to <b>+${cleanedPhone}</b> with pre-filled report text.<br/>
-                                    📄 PDF saved in Downloads (<b>${filename}</b>) — tap 📎 in chat to attach if desired!
-                                </div>
-                            `, 9000);
-                            return;
-                        }
-
-                        // 3. Fallback when NO phone number is entered: Use Mobile Native File Share API
-                        if (isMobile && navigator.canShare && navigator.canShare({ files: [file] })) {
-                            try {
-                                await navigator.share({
-                                    files: [file],
-                                    title: title,
-                                    text: textForClipboard.substring(0, 300) + '...'
-                                });
-                                showNotificationToast(`<b>✅ PDF File Shared!</b><br/><span style="color:#94a3b8; font-size:12px;">PDF document attached directly via Mobile Share</span>`, 4000);
-                                return;
-                            } catch(e) {
-                                if (e.name === 'AbortError') return; // User cancelled share dialog
-                                console.warn("Mobile native share fallback:", e);
-                            }
-                        }
-
-                        // Generic WhatsApp intent
+                        // Download PDF file to device downloads
                         const blobUrl = URL.createObjectURL(blob);
                         const downloadAnchor = document.createElement('a');
                         downloadAnchor.href = blobUrl;
@@ -3051,6 +3034,47 @@
                         document.body.removeChild(downloadAnchor);
 
                         try { await navigator.clipboard.writeText(textForClipboard); } catch(e) {}
+
+                        const waUrl = cleanedPhone 
+                            ? (isMobile ? `whatsapp://send?phone=${cleanedPhone}&text=${encodeURIComponent(waMsg)}` : `https://api.whatsapp.com/send?phone=${cleanedPhone}&text=${encodeURIComponent(waMsg)}`)
+                            : (isMobile ? `whatsapp://send?text=${encodeURIComponent(waMsg)}` : `https://api.whatsapp.com/send?text=${encodeURIComponent(waMsg)}`);
+
+                        window.open(waUrl, '_blank');
+
+                        showNotificationToast(`
+                            <b style="color:#22c55e; font-size:1.02rem;">🟢 WhatsApp Opened${cleanedPhone ? ' for +' + cleanedPhone : ''}!</b><br/>
+                            <div style="margin-top:4px; font-size:12px; color:#cbd5e1;">
+                                Opened chat directly with pre-filled report text.<br/>
+                                📄 PDF saved in Downloads (<b>${filename}</b>) — tap 📎 in chat to attach if desired!
+                            </div>
+                        `, 9000);
+                    };
+                }
+
+                // OPTION 2: Attach PDF File Directly via Mobile Share
+                if (sharePdfBtn) {
+                    sharePdfBtn.onclick = async () => {
+                        const cleanedPhone = savePhone();
+                        closeModal();
+
+                        const blob = await getPdfBlob();
+                        const file = new File([blob], filename, { type: 'application/pdf' });
+                        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+                        if (isMobile && navigator.canShare && navigator.canShare({ files: [file] })) {
+                            try {
+                                await navigator.share({
+                                    files: [file],
+                                    title: title,
+                                    text: (cleanedPhone ? `Target Contact: +${cleanedPhone}\n\n` : '') + textForClipboard.substring(0, 300) + '...'
+                                });
+                                showNotificationToast(`<b>✅ PDF File Attached & Shared!</b><br/><span style="color:#94a3b8; font-size:12px;">PDF document attached directly via Mobile Share</span>`, 4000);
+                                return;
+                            } catch(e) {
+                                if (e.name === 'AbortError') return;
+                                console.warn("Mobile native share fallback:", e);
+                            }
+                        }
 
                         const waUrl = isMobile 
                             ? `whatsapp://send?text=${encodeURIComponent(waMsg)}` 
