@@ -779,9 +779,51 @@
             font-size: 0.98rem;
             line-height: 1.65;
             color: var(--text-primary);
-            white-space: pre-wrap;
+            white-space: normal;
             min-height: 520px;
             max-height: 82vh;
+        }
+
+        #ocrResult {
+            white-space: pre-wrap !important;
+        }
+
+        /* Markdown Table Styles inside content-area */
+        .content-area table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.2rem 0;
+            white-space: normal !important;
+            background: rgba(15, 23, 42, 0.7);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .content-area th {
+            background: rgba(30, 58, 138, 0.7);
+            color: #60a5fa;
+            font-weight: 700;
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 2px solid rgba(59, 130, 246, 0.4);
+            font-size: 0.92rem;
+        }
+
+        .content-area td {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 0.9rem;
+            color: #f8fafc;
+            line-height: 1.5;
+        }
+
+        .content-area tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .content-area tr:hover {
+            background: rgba(59, 130, 246, 0.08);
         }
 
         /* Markdown Styles inside content-area */
@@ -1204,42 +1246,42 @@
                     <div id="analysisResult" class="content-area" style="flex-grow: 1;"></div>
                     <div id="storyResult" class="content-area hidden" style="flex-grow: 1;"></div>
                     <div id="patientSummaryResult" class="content-area hidden" style="flex-grow: 1; display: flex; flex-direction: column; gap: 1rem;">
-                        <!-- Language Toggle Buttons (Mobile friendly wrap) -->
-                        <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 1rem; width: 100%;">
-                            <span style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; font-weight: 600;">🗣️ Select Summary Language:</span>
-                            <div style="display: flex; flex-wrap: wrap; justify-content: center; background: rgba(15, 23, 42, 0.6); border: 1px solid var(--panel-border); border-radius: 16px; padding: 6px; gap: 6px; width: 100%;">
-                                <button id="btnLangEn" type="button" style="border: none; padding: 8px 16px; border-radius: 12px; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.3s; background: var(--primary-color); color: white; box-shadow: 0 2px 6px rgba(59,130,246,0.3); flex-grow: 1; min-width: 100px;">
+                        <!-- Language Toggle Buttons Bar -->
+                        <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 0.5rem; width: 100%;">
+                            <span style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.4rem; font-weight: 600;">🗣️ Select Summary Language:</span>
+                            <div style="display: flex; flex-wrap: wrap; justify-content: center; background: rgba(15, 23, 42, 0.8); border: 1px solid var(--panel-border); border-radius: 12px; padding: 4px; gap: 4px; width: 100%; max-width: 580px;">
+                                <button id="btnLangEn" type="button" style="border: none; padding: 7px 14px; border-radius: 8px; font-weight: 600; font-size: 0.88rem; cursor: pointer; transition: all 0.2s; background: var(--primary-color); color: white; flex: 1; min-width: 100px; text-align: center;">
                                     🇬🇧 English
                                 </button>
-                                <button id="btnLangMr" type="button" style="border: none; padding: 8px 16px; border-radius: 12px; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.3s; background: transparent; color: var(--text-secondary); flex-grow: 1; min-width: 100px;">
+                                <button id="btnLangMr" type="button" style="border: none; padding: 7px 14px; border-radius: 8px; font-weight: 600; font-size: 0.88rem; cursor: pointer; transition: all 0.2s; background: transparent; color: var(--text-secondary); flex: 1; min-width: 100px; text-align: center;">
                                     🚩 मराठी
                                 </button>
-                                <button id="btnLangKn" type="button" style="border: none; padding: 8px 16px; border-radius: 12px; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.3s; background: transparent; color: var(--text-secondary); flex-grow: 1; min-width: 100px;">
+                                <button id="btnLangKn" type="button" style="border: none; padding: 7px 14px; border-radius: 8px; font-weight: 600; font-size: 0.88rem; cursor: pointer; transition: all 0.2s; background: transparent; color: var(--text-secondary); flex: 1; min-width: 100px; text-align: center;">
                                     🟡 ಕನ್ನಡ
                                 </button>
-                                <button id="btnLangHi" type="button" style="border: none; padding: 8px 16px; border-radius: 12px; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.3s; background: transparent; color: var(--text-secondary); flex-grow: 1; min-width: 100px;">
+                                <button id="btnLangHi" type="button" style="border: none; padding: 7px 14px; border-radius: 8px; font-weight: 600; font-size: 0.88rem; cursor: pointer; transition: all 0.2s; background: transparent; color: var(--text-secondary); flex: 1; min-width: 100px; text-align: center;">
                                     🇮🇳 हिन्दी
                                 </button>
                             </div>
                         </div>
                         
                         <!-- English Summary Card -->
-                        <div id="summaryCardEn" style="padding: 1rem; border-radius: 12px; background: rgba(30, 41, 59, 0.2); border: 1px solid var(--panel-border); line-height: 1.6; min-height: 350px;">
+                        <div id="summaryCardEn" style="padding: 1.25rem; border-radius: 12px; background: rgba(30, 41, 59, 0.4); border: 1px solid var(--panel-border); line-height: 1.7; min-height: 480px; font-size: 1.02rem; overflow-y: visible;">
                             <!-- English content injected here -->
                         </div>
                         
                         <!-- Marathi Summary Card -->
-                        <div id="summaryCardMr" class="hidden" style="padding: 1rem; border-radius: 12px; background: rgba(30, 41, 59, 0.2); border: 1px solid var(--panel-border); line-height: 1.6; font-size: 1.05rem; min-height: 350px;">
+                        <div id="summaryCardMr" class="hidden" style="padding: 1.25rem; border-radius: 12px; background: rgba(30, 41, 59, 0.4); border: 1px solid var(--panel-border); line-height: 1.7; font-size: 1.05rem; min-height: 480px; overflow-y: visible;">
                             <!-- Marathi content injected here -->
                         </div>
 
                         <!-- Kannada Summary Card -->
-                        <div id="summaryCardKn" class="hidden" style="padding: 1rem; border-radius: 12px; background: rgba(30, 41, 59, 0.2); border: 1px solid var(--panel-border); line-height: 1.6; font-size: 1.05rem; min-height: 350px;">
+                        <div id="summaryCardKn" class="hidden" style="padding: 1.25rem; border-radius: 12px; background: rgba(30, 41, 59, 0.4); border: 1px solid var(--panel-border); line-height: 1.7; font-size: 1.05rem; min-height: 480px; overflow-y: visible;">
                             <!-- Kannada content injected here -->
                         </div>
 
                         <!-- Hindi Summary Card -->
-                        <div id="summaryCardHi" class="hidden" style="padding: 1rem; border-radius: 12px; background: rgba(30, 41, 59, 0.2); border: 1px solid var(--panel-border); line-height: 1.6; font-size: 1.05rem; min-height: 350px;">
+                        <div id="summaryCardHi" class="hidden" style="padding: 1.25rem; border-radius: 12px; background: rgba(30, 41, 59, 0.4); border: 1px solid var(--panel-border); line-height: 1.7; font-size: 1.05rem; min-height: 480px; overflow-y: visible;">
                             <!-- Hindi content injected here -->
                         </div>
                     </div>
@@ -3790,21 +3832,21 @@ Total Pages Extracted and Analyzed: ${currentFiles.length} of ${currentFiles.len
                         
                         res.english = extractSection(text, 
                             [/\[?ENGLISH_SUMMARY_START\]?/i, /##?\s*\d*\.?\s*English Summary[^\n]*/i, /##?\s*\d*\.?\s*English Patient Summary[^\n]*/i], 
-                            [/\[?ENGLISH_SUMMARY_END\]?/i, /\[?MARATHI_SUMMARY_START\]?/i, /##?\s*\d*\.?\s*Marathi/i, /मराठी/i]
+                            [/\[?ENGLISH_SUMMARY_END\]?/i, /\[?MARATHI_SUMMARY_START\]?/i, /##?\s*\d*\.?\s*Marathi/i, /मराठी/i, /प्रिय रुग्ण/i]
                         );
                         
                         res.marathi = extractSection(text, 
-                            [/\[?MARATHI_SUMMARY_START\]?/i, /##?\s*\d*\.?\s*Marathi Summary[^\n]*/i, /##?\s*\d*\.?\s*मराठी सारांश[^\n]*/i, /##?\s*\d*\.?\s*Marathi[^\n]*/i, /मराठी/i], 
-                            [/\[?MARATHI_SUMMARY_END\]?/i, /\[?KANNADA_SUMMARY_START\]?/i, /##?\s*\d*\.?\s*Kannada/i, /ಕನ್ನಡ/i]
+                            [/\[?MARATHI_SUMMARY_START\]?/i, /##?\s*\d*\.?\s*Marathi Summary[^\n]*/i, /##?\s*\d*\.?\s*मराठी सारांश[^\n]*/i, /##?\s*\d*\.?\s*Marathi[^\n]*/i, /मराठी/i, /प्रिय रुग्ण/i], 
+                            [/\[?MARATHI_SUMMARY_END\]?/i, /\[?KANNADA_SUMMARY_START\]?/i, /##?\s*\d*\.?\s*Kannada/i, /ಕನ್ನಡ/i, /ಆತ್ಮೀಯ ರೋಗಿ/i]
                         );
                         
                         res.kannada = extractSection(text, 
-                            [/\[?KANNADA_SUMMARY_START\]?/i, /##?\s*\d*\.?\s*Kannada Summary[^\n]*/i, /##?\s*\d*\.?\s*ಕನ್ನಡ ಸಾರಾಂಶ[^\n]*/i, /##?\s*\d*\.?\s*Kannada[^\n]*/i, /ಕನ್ನಡ/i], 
-                            [/\[?KANNADA_SUMMARY_END\]?/i, /\[?HINDI_SUMMARY_START\]?/i, /##?\s*\d*\.?\s*Hindi/i, /हिन्दी/i, /हिंदी/i]
+                            [/\[?KANNADA_SUMMARY_START\]?/i, /##?\s*\d*\.?\s*Kannada Summary[^\n]*/i, /##?\s*\d*\.?\s*ಕನ್ನಡ ಸಾರಾಂಶ[^\n]*/i, /##?\s*\d*\.?\s*Kannada[^\n]*/i, /ಕನ್ನಡ/i, /ಆತ್ಮೀಯ ರೋಗಿ/i], 
+                            [/\[?KANNADA_SUMMARY_END\]?/i, /\[?HINDI_SUMMARY_START\]?/i, /##?\s*\d*\.?\s*Hindi/i, /हिन्दी/i, /हिंदी/i, /प्रिय मरीज/i, /प्रिय रोगी/i]
                         );
                         
                         res.hindi = extractSection(text, 
-                            [/\[?HINDI_SUMMARY_START\]?/i, /##?\s*\d*\.?\s*Hindi Summary[^\n]*/i, /##?\s*\d*\.?\s*हिन्दी सारांश[^\n]*/i, /##?\s*\d*\.?\s*Hindi[^\n]*/i, /हिंदी/i, /हिन्दी/i], 
+                            [/\[?HINDI_SUMMARY_START\]?/i, /##?\s*\d*\.?\s*Hindi Summary[^\n]*/i, /##?\s*\d*\.?\s*हिन्दी सारांश[^\n]*/i, /##?\s*\d*\.?\s*Hindi[^\n]*/i, /हिंदी/i, /हिन्दी/i, /प्रिय मरीज/i, /प्रिय रोगी/i], 
                             [/\[?HINDI_SUMMARY_END\]?/i, /$/i]
                         );
                         
@@ -3814,15 +3856,24 @@ Total Pages Extracted and Analyzed: ${currentFiles.length} of ${currentFiles.len
                     const parsedExtractedText = parseSection(textContent, '[EXTRACTED_TEXT_START]', '[EXTRACTED_TEXT_END]', ["Raw Extracted OCR Text", "Extracted Text"], ["Patient & Report Information", "ANALYSIS_START", "Structured Analysis"], "");
                     const parsedAnalysis = parseSection(textContent, '[ANALYSIS_START]', '[ANALYSIS_END]', ["Patient & Report Information", "Clinical Analysis", "Structured Analysis"], ["The Patient's Clinical Story", "Clinical Story", "STORY_START", "English Summary", "ENGLISH_SUMMARY_START"], "");
                     const parsedStory = parseSection(textContent, '[STORY_START]', '[STORY_END]', ["The Patient's Clinical Story", "Clinical Story", "Narrative Clinical Story"], ["English Patient Summary", "English Summary", "ENGLISH_SUMMARY_START"], "");
-                    const parsedEnglishSummary = parseSection(textContent, '[ENGLISH_SUMMARY_START]', '[ENGLISH_SUMMARY_END]', ["English Patient Summary", "English Summary"], ["Marathi Patient Summary", "Marathi Summary", "Marathi", "MARATHI_SUMMARY_START"], "");
-                    const parsedMarathiSummary = parseSection(textContent, '[MARATHI_SUMMARY_START]', '[MARATHI_SUMMARY_END]', ["Marathi Patient Summary", "Marathi Summary", "मराठी"], ["Kannada Patient Summary", "Kannada Summary", "Kannada", "KANNADA_SUMMARY_START"], "");
-                    const parsedKannadaSummary = parseSection(textContent, '[KANNADA_SUMMARY_START]', '[KANNADA_SUMMARY_END]', ["Kannada Patient Summary", "Kannada Summary", "ಕನ್ನಡ"], ["Hindi Patient Summary", "Hindi Summary", "Hindi", "HINDI_SUMMARY_START"], "");
-                    const parsedHindiSummary = parseSection(textContent, '[HINDI_SUMMARY_START]', '[HINDI_SUMMARY_END]', ["Hindi Patient Summary", "Hindi Summary", "हिन्दी", "हिंदी"], [], "");
+                    const parsedEnglishSummary = parseSection(textContent, '[ENGLISH_SUMMARY_START]', '[ENGLISH_SUMMARY_END]', ["English Patient Summary", "English Summary"], ["Marathi Patient Summary", "Marathi Summary", "मराठी सारांश", "मराठी", "MARATHI_SUMMARY_START"], "");
+                    const parsedMarathiSummary = parseSection(textContent, '[MARATHI_SUMMARY_START]', '[MARATHI_SUMMARY_END]', ["Marathi Patient Summary", "Marathi Summary", "मराठी सारांश", "मराठी", "प्रिय रुग्ण"], ["Kannada Patient Summary", "Kannada Summary", "ಕನ್ನಡ ಸಾರಾಂಶ", "Kannada", "ಕನ್ನಡ", "KANNADA_SUMMARY_START"], "");
+                    const parsedKannadaSummary = parseSection(textContent, '[KANNADA_SUMMARY_START]', '[KANNADA_SUMMARY_END]', ["Kannada Patient Summary", "Kannada Summary", "ಕನ್ನಡ ಸಾರಾಂಶ", "Kannada", "ಕನ್ನಡ", "ಆತ್ಮೀಯ ರೋಗಿ"], ["Hindi Patient Summary", "Hindi Summary", "हिन्दी सारांश", "हिंदी सारांश", "Hindi", "हिन्दी", "हिंदी", "HINDI_SUMMARY_START"], "");
+                    const parsedHindiSummary = parseSection(textContent, '[HINDI_SUMMARY_START]', '[HINDI_SUMMARY_END]', ["Hindi Patient Summary", "Hindi Summary", "हिन्दी सारांश", "हिंदी सारांश", "Hindi", "हिन्दी", "हिंदी", "प्रिय मरीज", "प्रिय रोगी"], [], "");
 
                     const smartSections = smartSplitSections(textContent);
 
                     let ocrMarkup = parsedExtractedText || smartSections.extractedText || "No text extracted.";
-                    let analysisMarkup = parsedAnalysis || smartSections.analysis || textContent;
+                    
+                    let rawAnalysisCandidate = parsedAnalysis || smartSections.analysis;
+                    if (!rawAnalysisCandidate) {
+                        let cleaned = textContent;
+                        cleaned = cleaned.replace(/\[?EXTRACTED_TEXT_START\]?[\s\S]*?(?:\[?EXTRACTED_TEXT_END\]?|\[?ANALYSIS_START\]?|##?\s*1\.)/i, '');
+                        cleaned = cleaned.replace(/(?:\[?STORY_START\]?|\[?ENGLISH_SUMMARY_START\]?|##?\s*\d*\.?\s*Clinical Story|##?\s*\d*\.?\s*English Summary)[\s\S]*/i, '');
+                        rawAnalysisCandidate = cleaned.trim() || textContent;
+                    }
+                    let analysisMarkup = rawAnalysisCandidate;
+
                     let storyMarkup = parsedStory || smartSections.story || "A detailed narrative clinical story summarizing this patient's health journey based on all findings.";
                     let englishSummaryMarkup = parsedEnglishSummary || smartSections.english || "Dear Patient, your clinical report analysis has been completed. All normal and abnormal parameters have been extracted into the doctor analysis table above.";
                     let marathiSummaryMarkup = parsedMarathiSummary || smartSections.marathi || "प्रिय रुग्ण, तुमच्या वैद्यकीय अहवालाचे विश्लेषण पूर्ण झाले आहे. सर्व सामान्य व असामान्य निष्कर्ष वरील तक्त्यात समाविष्ट केले आहेत.";
