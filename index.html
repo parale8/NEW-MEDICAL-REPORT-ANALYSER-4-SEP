@@ -723,39 +723,21 @@
         .results-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 1.5rem;
-            margin-top: 1.5rem;
+            gap: 2rem;
+            margin-top: 2rem;
             animation: fadeIn 0.8s ease-out;
-            width: 100%;
         }
 
-        @media (min-width: 900px) {
+        @media (min-width: 768px) {
             .results-grid {
-                grid-template-columns: 320px 1fr;
-                gap: 1.5rem;
+                grid-template-columns: 1fr 1fr;
             }
-        }
-
-        @media (min-width: 1200px) {
-            .results-grid {
-                grid-template-columns: 360px 1fr;
-                gap: 2rem;
-            }
-        }
-
-        .results-grid.full-width-analysis {
-            grid-template-columns: 1fr !important;
-        }
-
-        .results-grid.full-width-analysis > .result-panel:first-child {
-            display: none !important;
         }
 
         .result-panel {
             display: flex;
             flex-direction: column;
-            min-height: 680px;
-            height: auto;
+            height: 600px;
         }
 
         .result-panel h3 {
@@ -773,57 +755,13 @@
         .content-area {
             flex-grow: 1;
             overflow-y: auto;
-            padding: 1.25rem;
+            padding: 1rem;
             background: rgba(15, 23, 42, 0.6);
             border-radius: 8px;
-            font-size: 0.98rem;
-            line-height: 1.65;
+            font-size: 0.95rem;
+            line-height: 1.6;
             color: var(--text-primary);
-            white-space: normal;
-            min-height: 520px;
-            max-height: 82vh;
-        }
-
-        #ocrResult {
-            white-space: pre-wrap !important;
-        }
-
-        /* Markdown Table Styles inside content-area */
-        .content-area table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 1.2rem 0;
-            white-space: normal !important;
-            background: rgba(15, 23, 42, 0.7);
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid rgba(59, 130, 246, 0.3);
-        }
-
-        .content-area th {
-            background: rgba(30, 58, 138, 0.7);
-            color: #60a5fa;
-            font-weight: 700;
-            padding: 10px 12px;
-            text-align: left;
-            border-bottom: 2px solid rgba(59, 130, 246, 0.4);
-            font-size: 0.92rem;
-        }
-
-        .content-area td {
-            padding: 10px 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            font-size: 0.9rem;
-            color: #f8fafc;
-            line-height: 1.5;
-        }
-
-        .content-area tr:nth-child(even) {
-            background: rgba(255, 255, 255, 0.02);
-        }
-
-        .content-area tr:hover {
-            background: rgba(59, 130, 246, 0.08);
+            white-space: pre-wrap;
         }
 
         /* Markdown Styles inside content-area */
@@ -1169,12 +1107,7 @@
 
                 <section class="result-panel glass-panel highlight" style="display: flex; flex-direction: column;">
                     <div class="panel-header-tabs" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--panel-border); padding-bottom: 0.75rem; flex-wrap: wrap; gap: 0.75rem;">
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <h3 id="analysisPanelTitle" style="margin: 0; border: none; padding: 0; font-size: 1.2rem; color: var(--primary-color);">AI Analysis & Findings</h3>
-                            <button id="toggleExpandPanelBtn" type="button" style="background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all 0.2s;" title="Toggle Full Width View for AI Reports">
-                                ↔️ Expand View
-                            </button>
-                        </div>
+                        <h3 id="analysisPanelTitle" style="margin: 0; border: none; padding: 0; font-size: 1.2rem; color: var(--primary-color);">AI Analysis & Findings</h3>
                         <div class="tab-buttons-container" style="display: flex; background: rgba(15, 23, 42, 0.8); border: 1px solid var(--panel-border); border-radius: 8px; padding: 4px; gap: 4px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);">
                             <button id="tabStructured" class="tab-btn active-structured" style="border: none; padding: 6px 14px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 6px;">
                                 📊 Structured Report
@@ -1246,42 +1179,42 @@
                     <div id="analysisResult" class="content-area" style="flex-grow: 1;"></div>
                     <div id="storyResult" class="content-area hidden" style="flex-grow: 1;"></div>
                     <div id="patientSummaryResult" class="content-area hidden" style="flex-grow: 1; display: flex; flex-direction: column; gap: 1rem;">
-                        <!-- Language Toggle Buttons Bar -->
-                        <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 0.5rem; width: 100%;">
-                            <span style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.4rem; font-weight: 600;">🗣️ Select Summary Language:</span>
-                            <div style="display: flex; flex-wrap: wrap; justify-content: center; background: rgba(15, 23, 42, 0.8); border: 1px solid var(--panel-border); border-radius: 12px; padding: 4px; gap: 4px; width: 100%; max-width: 580px;">
-                                <button id="btnLangEn" type="button" style="border: none; padding: 7px 14px; border-radius: 8px; font-weight: 600; font-size: 0.88rem; cursor: pointer; transition: all 0.2s; background: var(--primary-color); color: white; flex: 1; min-width: 100px; text-align: center;">
+                        <!-- Language Toggle Buttons (Mobile friendly wrap) -->
+                        <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 1rem; width: 100%;">
+                            <span style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem; font-weight: 600;">🗣️ Select Summary Language:</span>
+                            <div style="display: flex; flex-wrap: wrap; justify-content: center; background: rgba(15, 23, 42, 0.6); border: 1px solid var(--panel-border); border-radius: 16px; padding: 6px; gap: 6px; width: 100%;">
+                                <button id="btnLangEn" type="button" style="border: none; padding: 8px 16px; border-radius: 12px; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.3s; background: var(--primary-color); color: white; box-shadow: 0 2px 6px rgba(59,130,246,0.3); flex-grow: 1; min-width: 100px;">
                                     🇬🇧 English
                                 </button>
-                                <button id="btnLangMr" type="button" style="border: none; padding: 7px 14px; border-radius: 8px; font-weight: 600; font-size: 0.88rem; cursor: pointer; transition: all 0.2s; background: transparent; color: var(--text-secondary); flex: 1; min-width: 100px; text-align: center;">
+                                <button id="btnLangMr" type="button" style="border: none; padding: 8px 16px; border-radius: 12px; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.3s; background: transparent; color: var(--text-secondary); flex-grow: 1; min-width: 100px;">
                                     🚩 मराठी
                                 </button>
-                                <button id="btnLangKn" type="button" style="border: none; padding: 7px 14px; border-radius: 8px; font-weight: 600; font-size: 0.88rem; cursor: pointer; transition: all 0.2s; background: transparent; color: var(--text-secondary); flex: 1; min-width: 100px; text-align: center;">
+                                <button id="btnLangKn" type="button" style="border: none; padding: 8px 16px; border-radius: 12px; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.3s; background: transparent; color: var(--text-secondary); flex-grow: 1; min-width: 100px;">
                                     🟡 ಕನ್ನಡ
                                 </button>
-                                <button id="btnLangHi" type="button" style="border: none; padding: 7px 14px; border-radius: 8px; font-weight: 600; font-size: 0.88rem; cursor: pointer; transition: all 0.2s; background: transparent; color: var(--text-secondary); flex: 1; min-width: 100px; text-align: center;">
+                                <button id="btnLangHi" type="button" style="border: none; padding: 8px 16px; border-radius: 12px; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.3s; background: transparent; color: var(--text-secondary); flex-grow: 1; min-width: 100px;">
                                     🇮🇳 हिन्दी
                                 </button>
                             </div>
                         </div>
                         
                         <!-- English Summary Card -->
-                        <div id="summaryCardEn" style="padding: 1.25rem; border-radius: 12px; background: rgba(30, 41, 59, 0.4); border: 1px solid var(--panel-border); line-height: 1.7; min-height: 480px; font-size: 1.02rem; overflow-y: visible;">
+                        <div id="summaryCardEn" style="padding: 1rem; border-radius: 12px; background: rgba(30, 41, 59, 0.2); border: 1px solid var(--panel-border); line-height: 1.6; min-height: 350px;">
                             <!-- English content injected here -->
                         </div>
                         
                         <!-- Marathi Summary Card -->
-                        <div id="summaryCardMr" class="hidden" style="padding: 1.25rem; border-radius: 12px; background: rgba(30, 41, 59, 0.4); border: 1px solid var(--panel-border); line-height: 1.7; font-size: 1.05rem; min-height: 480px; overflow-y: visible;">
+                        <div id="summaryCardMr" class="hidden" style="padding: 1rem; border-radius: 12px; background: rgba(30, 41, 59, 0.2); border: 1px solid var(--panel-border); line-height: 1.6; font-size: 1.05rem; min-height: 350px;">
                             <!-- Marathi content injected here -->
                         </div>
 
                         <!-- Kannada Summary Card -->
-                        <div id="summaryCardKn" class="hidden" style="padding: 1.25rem; border-radius: 12px; background: rgba(30, 41, 59, 0.4); border: 1px solid var(--panel-border); line-height: 1.7; font-size: 1.05rem; min-height: 480px; overflow-y: visible;">
+                        <div id="summaryCardKn" class="hidden" style="padding: 1rem; border-radius: 12px; background: rgba(30, 41, 59, 0.2); border: 1px solid var(--panel-border); line-height: 1.6; font-size: 1.05rem; min-height: 350px;">
                             <!-- Kannada content injected here -->
                         </div>
 
                         <!-- Hindi Summary Card -->
-                        <div id="summaryCardHi" class="hidden" style="padding: 1.25rem; border-radius: 12px; background: rgba(30, 41, 59, 0.4); border: 1px solid var(--panel-border); line-height: 1.7; font-size: 1.05rem; min-height: 480px; overflow-y: visible;">
+                        <div id="summaryCardHi" class="hidden" style="padding: 1rem; border-radius: 12px; background: rgba(30, 41, 59, 0.2); border: 1px solid var(--panel-border); line-height: 1.6; font-size: 1.05rem; min-height: 350px;">
                             <!-- Hindi content injected here -->
                         </div>
                     </div>
@@ -1490,17 +1423,6 @@
                     } catch (e) {
                         console.warn("URL key parsing failed:", e);
                     }
-
-                    // Check alternative historical key names used in earlier versions
-                    const altKeys = ['mediscan_gemini_api_key', 'gemini_api_key', 'user_gemini_api_key', 'gemini_key', 'api_key'];
-                    for (const altKey of altKeys) {
-                        try {
-                            const val = localStorage.getItem(altKey) || sessionStorage.getItem(altKey);
-                            if (val && val.trim().length > 10 && !val.includes("AQ.Ab8RN")) {
-                                return val.trim();
-                            }
-                        } catch (e) {}
-                    }
                 }
 
                 // 2. Standard Local Storage
@@ -1650,17 +1572,21 @@
             const savedKey = safeStorage.getItem('mediscan_gemini_api_key');
             const actionBar = document.getElementById('actionBar');
 
-            // Keep API key configuration panel open and accessible so users can enter or view their key anytime
+            // Keep API key configuration panel accessible so users can enter their own key if default keys are quota-limited
             const apiConfigDetails = document.getElementById('apiConfigDetails');
             if (apiConfigDetails) {
-                apiConfigDetails.setAttribute('open', '');
                 if (savedKey) {
+                    apiConfigDetails.setAttribute('open', '');
                     if (apiKeyInput) apiKeyInput.value = savedKey;
                     if (keyStatus) {
-                        const masked = savedKey.length > 8 ? `${savedKey.substring(0, 6)}...${savedKey.substring(savedKey.length - 4)}` : 'Saved Key';
-                        keyStatus.textContent = `✅ API Key loaded from saved preferences (${masked}).`;
+                        keyStatus.textContent = `✅ API Key loaded from saved preferences.`;
                         keyStatus.style.color = "var(--accent-color)";
                     }
+                } else if (DEFAULT_API_KEY !== "PASTE_YOUR_API_KEY_HERE" && DEFAULT_API_KEY.length > 10) {
+                    apiConfigDetails.removeAttribute('open');
+                    apiConfigDetails.closest('.config-section').style.display = 'block';
+                } else {
+                    apiConfigDetails.setAttribute('open', '');
                 }
             }
 
@@ -3033,8 +2959,6 @@
                 const iconEl = document.getElementById('waPromptIcon');
                 const statusSpan = document.getElementById('waPromptStatus');
 
-                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
                 // Read any pre-entered phone number from UI controls or localStorage
                 let initialPhone = '';
                 if (recipientType === 'doctor') {
@@ -3050,24 +2974,16 @@
                 if (recipientType === 'doctor') {
                     if (iconEl) iconEl.textContent = '👨‍⚕️';
                     if (titleEl) titleEl.textContent = 'Share Structured Report with Doctor?';
-                    if (subTitleEl) subTitleEl.textContent = isMobile 
-                        ? 'Choose how you want to send the report on WhatsApp:'
-                        : 'On Desktop: PDF report downloads & opens WhatsApp Web directly:';
+                    if (subTitleEl) subTitleEl.textContent = 'Choose how you want to send the report on WhatsApp:';
                     if (recipientEl) recipientEl.textContent = getDoctorSalutationText();
                 } else {
                     if (iconEl) iconEl.textContent = '🩺';
                     if (titleEl) titleEl.textContent = 'Share Health Summary with Patient?';
-                    if (subTitleEl) subTitleEl.textContent = isMobile 
-                        ? 'Choose how you want to send the summary on WhatsApp:'
-                        : 'On Desktop: PDF summary downloads & opens WhatsApp Web directly:';
+                    if (subTitleEl) subTitleEl.textContent = 'Choose how you want to send the summary on WhatsApp:';
                     if (recipientEl) recipientEl.textContent = 'Patient (Health Summary)';
                 }
 
-                if (confirmBtn) {
-                    confirmBtn.innerHTML = isMobile 
-                        ? '📎 Attach PDF & Share via WhatsApp' 
-                        : '🟢 Download PDF & Open WhatsApp Web';
-                }
+                if (confirmBtn) confirmBtn.innerHTML = '📎 Attach PDF & Share via WhatsApp';
                 if (sharePdfBtn) sharePdfBtn.innerHTML = '💬 Open WhatsApp Direct Chat (Text Only)';
 
                 if (filenameEl) filenameEl.textContent = filename;
@@ -3103,22 +3019,26 @@
                 };
 
                 // Pre-warm PDF Blob immediately on modal display
+                // This ensures getPdfBlob returns in 0ms when confirmBtn is clicked,
+                // preserving user gesture activation so navigator.share works 100% of the time!
                 getPdfBlob().then(() => {
                     if (statusSpan) statusSpan.innerHTML = '✅ PDF Ready to Attach';
                 }).catch(err => console.warn("PDF pre-warm notice:", err));
 
-                // OPTION 1 (Primary Action): Share PDF via Web Share API (Mobile) or Download & Open WhatsApp Web (Desktop)
+                // OPTION 1 (Primary Action): Attach PDF File directly to WhatsApp
                 if (confirmBtn) {
                     confirmBtn.onclick = async () => {
                         const cleanedPhone = savePhone();
                         closeModal();
 
+                        // Retrieve pre-warmed blob (0ms delay if cached)
                         const blob = await getPdfBlob();
                         const file = new File([blob], filename, { type: 'application/pdf' });
+                        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
                         const waMsg = textForClipboard.length > 800 ? textForClipboard.substring(0, 800) + '\n\n[Full report in attached PDF]' : textForClipboard;
 
-                        // Try native Web Share API on mobile (Android / iOS native WhatsApp attachment)
-                        if (isMobile && navigator.canShare && navigator.canShare({ files: [file] })) {
+                        // Try native Web Share API with binary file payload (Android / iOS native WhatsApp attachment)
+                        if (navigator.canShare && navigator.canShare({ files: [file] })) {
                             try {
                                 await navigator.share({
                                     files: [file],
@@ -3133,7 +3053,8 @@
                             }
                         }
 
-                        // Desktop / Browser Fallback: Download PDF file directly to device Downloads folder
+                        // Fallback for desktop or browsers without file share support:
+                        // Download PDF file directly to device Downloads folder
                         const blobUrl = URL.createObjectURL(blob);
                         const downloadAnchor = document.createElement('a');
                         downloadAnchor.href = blobUrl;
@@ -3151,13 +3072,14 @@
                         window.open(waUrl, '_blank');
 
                         showNotificationToast(`
-                            <b style="color:#22c55e; font-size:1.02rem;">🟢 PDF Saved to Downloads & WhatsApp Opened!</b><br/>
-                            <div style="margin-top:6px; background:rgba(15,23,42,0.9); padding:10px 12px; border-radius:8px; border:1.5px solid #22c55e; font-size:12px; color:#f8fafc; line-height:1.5;">
-                                <b>📌 How to attach PDF in WhatsApp Web (Desktop):</b><br/>
-                                • <b>Option A:</b> Drag <b>${filename}</b> from Downloads directly into WhatsApp Web chat window.<br/>
-                                • <b>Option B:</b> Click <b>📎 (Paperclip)</b> ➔ <b>Document 📄</b> ➔ Select <b>${filename}</b>.
+                            <b style="color:#22c55e; font-size:1.02rem;">🟢 PDF Downloaded & WhatsApp Opened!</b><br/>
+                            <div style="margin-top:6px; background:rgba(15,23,42,0.7); padding:8px 10px; border-radius:6px; border:1px solid rgba(59,130,246,0.3); font-size:12px; color:#cbd5e1; line-height:1.5;">
+                                <b>📌 How to attach PDF in WhatsApp:</b><br/>
+                                1. Click <b>📎 (Paperclip)</b> or <b>➕</b> next to WhatsApp text input.<br/>
+                                2. Click <b>Document</b> 📄.<br/>
+                                3. Select <b>${filename}</b> from <b>Downloads</b>!
                             </div>
-                        `, 14000);
+                        `, 12000);
                     };
                 }
 
@@ -3499,7 +3421,7 @@
                     usingCustomKey = true;
                     safeStorage.setItem('mediscan_gemini_api_key', apiKey);
                     const masked = apiKey.length > 8 ? `${apiKey.substring(0, 6)}...${apiKey.substring(apiKey.length - 4)}` : 'Custom Key';
-                    keyStatus.textContent = `✅ API Key active (${masked}).`;
+                    keyStatus.textContent = `✅ API Key permanently saved for this project (${masked})!`;
                     keyStatus.style.color = "var(--accent-color)";
                 } else {
                     // Try to load from safeStorage in case it was saved before but not populated in the input field
@@ -3512,7 +3434,10 @@
                         keyStatus.textContent = `✅ API Key loaded from saved preferences (${masked}).`;
                         keyStatus.style.color = "var(--accent-color)";
                     } else {
-                        // Use default hardcoded key pool if user hasn't entered a custom key
+                        // Use default hardcoded key
+                        safeStorage.removeItem('mediscan_gemini_api_key');
+                        keyStatus.textContent = "❌ API Key removed. Using default key.";
+                        keyStatus.style.color = "var(--danger-color)";
                         apiKey = (DEFAULT_API_KEY !== "PASTE_YOUR_API_KEY_HERE" ? getDecodedKey(DEFAULT_API_KEY) : "");
                         usingCustomKey = false;
                     }
@@ -3667,20 +3592,14 @@ Total Pages Extracted and Analyzed: ${currentFiles.length} of ${currentFiles.len
                     let success = false;
                     let selectedModel = '';
 
-                    // Build key pool prioritizing user's saved key
-                    const keyPool = usingCustomKey ? [apiKey, ...DEFAULT_API_KEY_POOL] : [...DEFAULT_API_KEY_POOL];
-                    
-                    // Add saved key from storage if not already present
-                    const storedKey = safeStorage.getItem('mediscan_gemini_api_key');
-                    if (storedKey && !keyPool.includes(storedKey)) {
-                        keyPool.unshift(storedKey);
-                    }
+                    // Build the key pool: if user has a custom key, try it first, then fall back to default keys seamlessly
+                    const keyPool = usingCustomKey ? [apiKey, ...DEFAULT_API_KEY_POOL] : DEFAULT_API_KEY_POOL;
 
-                    // Standard active production model endpoints for Google Gemini Vision API
+                    // Active production models supported by Google Gemini API
                     const MODELS_TO_TRY = [
-                        'gemini-1.5-flash',
-                        'gemini-1.5-flash-8b',
-                        'gemini-1.5-pro',
+                        'gemini-2.5-flash',
+                        'gemini-3.6-flash',
+                        'gemini-3.5-flash',
                         'gemini-flash-latest'
                     ];
 
@@ -3691,8 +3610,6 @@ Total Pages Extracted and Analyzed: ${currentFiles.length} of ${currentFiles.len
                     outer:
                     for (let ki = 0; ki < keyPool.length && !success; ki++) {
                         const currentKey = getDecodedKey(keyPool[ki]);
-                        if (!currentKey) continue;
-                        
                         for (let mi = 0; mi < MODELS_TO_TRY.length && !success; mi++) {
                             const model = MODELS_TO_TRY[mi];
 
@@ -3703,7 +3620,7 @@ Total Pages Extracted and Analyzed: ${currentFiles.length} of ${currentFiles.len
                                     headers['Authorization'] = `Bearer ${currentKey}`;
                                 }
 
-                                const fetchPayload = {
+                                response = await fetch(url, {
                                     method: 'POST',
                                     headers: headers,
                                     body: JSON.stringify({
@@ -3719,15 +3636,7 @@ Total Pages Extracted and Analyzed: ${currentFiles.length} of ${currentFiles.len
                                             maxOutputTokens: 8192
                                         }
                                     })
-                                };
-
-                                response = await fetch(url, fetchPayload);
-
-                                // Automatic 1-second retry on temporary Google server high demand / spikes (503 / 500)
-                                if (!response.ok && (response.status === 503 || response.status === 500 || response.status === 429)) {
-                                    await new Promise(r => setTimeout(r, 800));
-                                    response = await fetch(url, fetchPayload);
-                                }
+                                });
 
                                 if (response.ok) {
                                     success = true;
@@ -3740,21 +3649,24 @@ Total Pages Extracted and Analyzed: ${currentFiles.length} of ${currentFiles.len
                                 console.warn(`Key[${ki}] ${model} failed (${response.status}): ${lastError}`);
 
                                 const lowerErr = lastError.toLowerCase();
-                                const isKeyErr = (response.status === 401 || response.status === 403 || lowerErr.includes('api_key_invalid') || lowerErr.includes('invalid api key')) && !lowerErr.includes('not found') && !lowerErr.includes('does not exist');
+                                const isKeyErr = response.status === 400 || response.status === 401 || response.status === 403 ||
+                                                 lowerErr.includes('key') || lowerErr.includes('unauthenticated') || 
+                                                 lowerErr.includes('invalid') || lowerErr.includes('leaked') || lowerErr.includes('permission');
 
                                 if (isKeyErr) {
                                     isKeyInvalid = true;
-                                    break; // Skip to next key if invalid
+                                    break; // Stop model loop for invalid key immediately
                                 }
 
                                 if (response.status === 429 || lowerErr.includes('quota') || lowerErr.includes('rate limit') || lowerErr.includes('resource_exhausted')) {
                                     isRateLimited = true;
-                                    console.warn(`Quota rate limit hit for ${model}, trying next model/key...`);
-                                    continue; // Try next model for same key first before abandoning key
+                                    break; // Stop model loop for rate-limited key immediately
                                 }
 
-                                // Skip any model endpoint errors silently and try next model
-                                continue;
+                                // Model not available — skip to next model
+                                if (response.status === 404 || lowerErr.includes('not found') || lowerErr.includes('does not exist')) {
+                                    continue;
+                                }
 
                             } catch (err) {
                                 if (err.message && err.message.startsWith('❌')) throw err;
@@ -3762,6 +3674,7 @@ Total Pages Extracted and Analyzed: ${currentFiles.length} of ${currentFiles.len
                                 console.warn(`Fetch error Key[${ki}] ${model}: ${lastError}`);
                             }
 
+                            // Small silent gap between model attempts
                             await new Promise(r => setTimeout(r, 150));
                         }
                     }
@@ -3773,19 +3686,20 @@ Total Pages Extracted and Analyzed: ${currentFiles.length} of ${currentFiles.len
                                 apiConfigDetails.closest('.config-section').style.display = 'block';
                             }
                         }
+                        if (isKeyInvalid) {
+                            safeStorage.removeItem('mediscan_gemini_api_key');
+                            if (keyStatus) {
+                                keyStatus.innerHTML = `❌ <strong>API Key Invalid or Revoked:</strong> The saved key was invalid. Cleared saved key to use new default key. Please try again! (<a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" style="color: #60a5fa; text-decoration: underline;">Google AI Studio</a>)`;
+                                keyStatus.style.color = "var(--danger-color)";
+                            }
+                            throw new Error('❌ The saved Gemini API key was invalid or revoked. It has been cleared. Please tap "Done! Extract & Analyze" again!');
+                        }
                         if (isRateLimited) {
                             if (keyStatus) {
-                                keyStatus.innerHTML = `⚠️ <strong>Gemini Free Key Quota Exhausted (HTTP 429):</strong> The shared/saved key hit Google's rate limit. <br>👉 <strong>Solution:</strong> Enter your own free API key in the box above (<a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" style="color: #60a5fa; text-decoration: underline; font-weight: bold;">Get instant free key from Google AI Studio</a>).`;
+                                keyStatus.innerHTML = `⚠️ <strong>Default Key Quota Exhausted:</strong> The shared key has hit Google Gemini's rate limit. Please paste your own free API key above! (<a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" style="color: #60a5fa; text-decoration: underline;">Get free key from Google AI Studio</a>)`;
                                 keyStatus.style.color = "var(--danger-color)";
                             }
-                            throw new Error('⚠️ The Gemini API key quota has been exhausted (HTTP 429). The API Key panel above has been opened — please paste your own free Gemini API key from Google AI Studio to proceed.');
-                        }
-                        if (isKeyInvalid) {
-                            if (keyStatus) {
-                                keyStatus.innerHTML = `❌ <strong>API Key Rejected:</strong> The API key was rejected by Gemini. Please check or re-paste your key above. (<a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" style="color: #60a5fa; text-decoration: underline; font-weight: bold;">Google AI Studio</a>)`;
-                                keyStatus.style.color = "var(--danger-color)";
-                            }
-                            throw new Error('❌ The Gemini API key was rejected as invalid. Please enter a valid API key in the settings panel above.');
+                            throw new Error('⚠️ The API key quota has been exhausted (HTTP 429). Please enter your own free Gemini API key in the settings panel above to analyze your report.');
                         }
                         throw new Error(`Unable to connect to AI service: ${lastError}`);
                     }
@@ -3803,41 +3717,6 @@ Total Pages Extracted and Analyzed: ${currentFiles.length} of ${currentFiles.len
                     }
 
                     rawAnalysisText = textContent;
-
-                    // Fallback formatter for unstructured plain text responses into markdown tables
-                    function formatUnstructuredAnalysis(text) {
-                        if (!text || text.includes('|')) return text;
-                        const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-                        const tableRows = [];
-                        const narrativeLines = [];
-                        
-                        lines.forEach(line => {
-                            if (/\d+[\.\d]*\s*[\-\:]\s*\d+[\.\d]*/.test(line) || /:\s*\d+/.test(line) || /\d+\.\d+/.test(line)) {
-                                let status = '🟢 Normal';
-                                const lower = line.toLowerCase();
-                                if (lower.includes('high') || lower.includes('elevated') || lower.includes('abnormal') || lower.includes('low') || lower.includes('increased')) {
-                                    status = '🔴 Abnormal';
-                                }
-                                tableRows.push(`| Lab Finding / Range | \`${line}\` | Normal / Abnormal | ${status} |`);
-                            } else {
-                                narrativeLines.push(line);
-                            }
-                        });
-                        
-                        let formatted = `## 1. Patient & Report Analysis\n\n`;
-                        if (tableRows.length > 0) {
-                            formatted += `### Group A: Laboratory & Diagnostic Findings\n\n`;
-                            formatted += `| Investigation / Parameter | Extracted Findings / Values | Classification | Status |\n| :--- | :--- | :--- | :--- |\n`;
-                            formatted += tableRows.join('\n') + `\n\n`;
-                        }
-                        
-                        if (narrativeLines.length > 0) {
-                            formatted += `### Clinical Summary & Interpretation\n\n`;
-                            formatted += narrativeLines.map(l => `> ${l}`).join('\n\n');
-                        }
-                        
-                        return formatted;
-                    }
 
                     // Smart resilient section splitter
                     function smartSplitSections(text) {
@@ -3882,21 +3761,21 @@ Total Pages Extracted and Analyzed: ${currentFiles.length} of ${currentFiles.len
                         
                         res.english = extractSection(text, 
                             [/\[?ENGLISH_SUMMARY_START\]?/i, /##?\s*\d*\.?\s*English Summary[^\n]*/i, /##?\s*\d*\.?\s*English Patient Summary[^\n]*/i], 
-                            [/\[?ENGLISH_SUMMARY_END\]?/i, /\[?MARATHI_SUMMARY_START\]?/i, /##?\s*\d*\.?\s*Marathi/i, /मराठी/i, /प्रिय रुग्ण/i]
+                            [/\[?ENGLISH_SUMMARY_END\]?/i, /\[?MARATHI_SUMMARY_START\]?/i, /##?\s*\d*\.?\s*Marathi/i, /मराठी/i]
                         );
                         
                         res.marathi = extractSection(text, 
-                            [/\[?MARATHI_SUMMARY_START\]?/i, /##?\s*\d*\.?\s*Marathi Summary[^\n]*/i, /##?\s*\d*\.?\s*मराठी सारांश[^\n]*/i, /##?\s*\d*\.?\s*Marathi[^\n]*/i, /मराठी/i, /प्रिय रुग्ण/i], 
-                            [/\[?MARATHI_SUMMARY_END\]?/i, /\[?KANNADA_SUMMARY_START\]?/i, /##?\s*\d*\.?\s*Kannada/i, /ಕನ್ನಡ/i, /ಆತ್ಮೀಯ ರೋಗಿ/i]
+                            [/\[?MARATHI_SUMMARY_START\]?/i, /##?\s*\d*\.?\s*Marathi Summary[^\n]*/i, /##?\s*\d*\.?\s*मराठी सारांश[^\n]*/i, /##?\s*\d*\.?\s*Marathi[^\n]*/i, /मराठी/i], 
+                            [/\[?MARATHI_SUMMARY_END\]?/i, /\[?KANNADA_SUMMARY_START\]?/i, /##?\s*\d*\.?\s*Kannada/i, /ಕನ್ನಡ/i]
                         );
                         
                         res.kannada = extractSection(text, 
-                            [/\[?KANNADA_SUMMARY_START\]?/i, /##?\s*\d*\.?\s*Kannada Summary[^\n]*/i, /##?\s*\d*\.?\s*ಕನ್ನಡ ಸಾರಾಂಶ[^\n]*/i, /##?\s*\d*\.?\s*Kannada[^\n]*/i, /ಕನ್ನಡ/i, /ಆತ್ಮೀಯ ರೋಗಿ/i], 
-                            [/\[?KANNADA_SUMMARY_END\]?/i, /\[?HINDI_SUMMARY_START\]?/i, /##?\s*\d*\.?\s*Hindi/i, /हिन्दी/i, /हिंदी/i, /प्रिय मरीज/i, /प्रिय रोगी/i]
+                            [/\[?KANNADA_SUMMARY_START\]?/i, /##?\s*\d*\.?\s*Kannada Summary[^\n]*/i, /##?\s*\d*\.?\s*ಕನ್ನಡ ಸಾರಾಂಶ[^\n]*/i, /##?\s*\d*\.?\s*Kannada[^\n]*/i, /ಕನ್ನಡ/i], 
+                            [/\[?KANNADA_SUMMARY_END\]?/i, /\[?HINDI_SUMMARY_START\]?/i, /##?\s*\d*\.?\s*Hindi/i, /हिन्दी/i, /हिंदी/i]
                         );
                         
                         res.hindi = extractSection(text, 
-                            [/\[?HINDI_SUMMARY_START\]?/i, /##?\s*\d*\.?\s*Hindi Summary[^\n]*/i, /##?\s*\d*\.?\s*हिन्दी सारांश[^\n]*/i, /##?\s*\d*\.?\s*Hindi[^\n]*/i, /हिंदी/i, /हिन्दी/i, /प्रिय मरीज/i, /प्रिय रोगी/i], 
+                            [/\[?HINDI_SUMMARY_START\]?/i, /##?\s*\d*\.?\s*Hindi Summary[^\n]*/i, /##?\s*\d*\.?\s*हिन्दी सारांश[^\n]*/i, /##?\s*\d*\.?\s*Hindi[^\n]*/i, /हिंदी/i, /हिन्दी/i], 
                             [/\[?HINDI_SUMMARY_END\]?/i, /$/i]
                         );
                         
@@ -3906,24 +3785,15 @@ Total Pages Extracted and Analyzed: ${currentFiles.length} of ${currentFiles.len
                     const parsedExtractedText = parseSection(textContent, '[EXTRACTED_TEXT_START]', '[EXTRACTED_TEXT_END]', ["Raw Extracted OCR Text", "Extracted Text"], ["Patient & Report Information", "ANALYSIS_START", "Structured Analysis"], "");
                     const parsedAnalysis = parseSection(textContent, '[ANALYSIS_START]', '[ANALYSIS_END]', ["Patient & Report Information", "Clinical Analysis", "Structured Analysis"], ["The Patient's Clinical Story", "Clinical Story", "STORY_START", "English Summary", "ENGLISH_SUMMARY_START"], "");
                     const parsedStory = parseSection(textContent, '[STORY_START]', '[STORY_END]', ["The Patient's Clinical Story", "Clinical Story", "Narrative Clinical Story"], ["English Patient Summary", "English Summary", "ENGLISH_SUMMARY_START"], "");
-                    const parsedEnglishSummary = parseSection(textContent, '[ENGLISH_SUMMARY_START]', '[ENGLISH_SUMMARY_END]', ["English Patient Summary", "English Summary"], ["Marathi Patient Summary", "Marathi Summary", "मराठी सारांश", "मराठी", "MARATHI_SUMMARY_START"], "");
-                    const parsedMarathiSummary = parseSection(textContent, '[MARATHI_SUMMARY_START]', '[MARATHI_SUMMARY_END]', ["Marathi Patient Summary", "Marathi Summary", "मराठी सारांश", "मराठी", "प्रिय रुग्ण"], ["Kannada Patient Summary", "Kannada Summary", "ಕನ್ನಡ ಸಾರಾಂಶ", "Kannada", "ಕನ್ನಡ", "KANNADA_SUMMARY_START"], "");
-                    const parsedKannadaSummary = parseSection(textContent, '[KANNADA_SUMMARY_START]', '[KANNADA_SUMMARY_END]', ["Kannada Patient Summary", "Kannada Summary", "ಕನ್ನಡ ಸಾರಾಂಶ", "Kannada", "ಕನ್ನಡ", "ಆತ್ಮೀಯ ರೋಗಿ"], ["Hindi Patient Summary", "Hindi Summary", "हिन्दी सारांश", "हिंदी सारांश", "Hindi", "हिन्दी", "हिंदी", "HINDI_SUMMARY_START"], "");
-                    const parsedHindiSummary = parseSection(textContent, '[HINDI_SUMMARY_START]', '[HINDI_SUMMARY_END]', ["Hindi Patient Summary", "Hindi Summary", "हिन्दी सारांश", "हिंदी सारांश", "Hindi", "हिन्दी", "हिंदी", "प्रिय मरीज", "प्रिय रोगी"], [], "");
+                    const parsedEnglishSummary = parseSection(textContent, '[ENGLISH_SUMMARY_START]', '[ENGLISH_SUMMARY_END]', ["English Patient Summary", "English Summary"], ["Marathi Patient Summary", "Marathi Summary", "Marathi", "MARATHI_SUMMARY_START"], "");
+                    const parsedMarathiSummary = parseSection(textContent, '[MARATHI_SUMMARY_START]', '[MARATHI_SUMMARY_END]', ["Marathi Patient Summary", "Marathi Summary", "मराठी"], ["Kannada Patient Summary", "Kannada Summary", "Kannada", "KANNADA_SUMMARY_START"], "");
+                    const parsedKannadaSummary = parseSection(textContent, '[KANNADA_SUMMARY_START]', '[KANNADA_SUMMARY_END]', ["Kannada Patient Summary", "Kannada Summary", "ಕನ್ನಡ"], ["Hindi Patient Summary", "Hindi Summary", "Hindi", "HINDI_SUMMARY_START"], "");
+                    const parsedHindiSummary = parseSection(textContent, '[HINDI_SUMMARY_START]', '[HINDI_SUMMARY_END]', ["Hindi Patient Summary", "Hindi Summary", "हिन्दी", "हिंदी"], [], "");
 
                     const smartSections = smartSplitSections(textContent);
 
                     let ocrMarkup = parsedExtractedText || smartSections.extractedText || "No text extracted.";
-                    
-                    let rawAnalysisCandidate = parsedAnalysis || smartSections.analysis;
-                    if (!rawAnalysisCandidate) {
-                        let cleaned = textContent;
-                        cleaned = cleaned.replace(/\[?EXTRACTED_TEXT_START\]?[\s\S]*?(?:\[?EXTRACTED_TEXT_END\]?|\[?ANALYSIS_START\]?|##?\s*1\.)/i, '');
-                        cleaned = cleaned.replace(/(?:\[?STORY_START\]?|\[?ENGLISH_SUMMARY_START\]?|##?\s*\d*\.?\s*Clinical Story|##?\s*\d*\.?\s*English Summary)[\s\S]*/i, '');
-                        rawAnalysisCandidate = cleaned.trim() || textContent;
-                    }
-                    let analysisMarkup = formatUnstructuredAnalysis(rawAnalysisCandidate);
-
+                    let analysisMarkup = parsedAnalysis || smartSections.analysis || textContent;
                     let storyMarkup = parsedStory || smartSections.story || "A detailed narrative clinical story summarizing this patient's health journey based on all findings.";
                     let englishSummaryMarkup = parsedEnglishSummary || smartSections.english || "Dear Patient, your clinical report analysis has been completed. All normal and abnormal parameters have been extracted into the doctor analysis table above.";
                     let marathiSummaryMarkup = parsedMarathiSummary || smartSections.marathi || "प्रिय रुग्ण, तुमच्या वैद्यकीय अहवालाचे विश्लेषण पूर्ण झाले आहे. सर्व सामान्य व असामान्य निष्कर्ष वरील तक्त्यात समाविष्ट केले आहेत.";
