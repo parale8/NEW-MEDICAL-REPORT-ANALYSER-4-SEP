@@ -3676,11 +3676,11 @@ Total Pages Extracted and Analyzed: ${currentFiles.length} of ${currentFiles.len
                         keyPool.unshift(storedKey);
                     }
 
-                    // Stable production model endpoints for Google Gemini Vision API
+                    // Standard active production model endpoints for Google Gemini Vision API
                     const MODELS_TO_TRY = [
                         'gemini-1.5-flash',
                         'gemini-1.5-pro',
-                        'gemini-2.0-flash'
+                        'gemini-flash-latest'
                     ];
 
                     let isRateLimited = false;
@@ -3744,9 +3744,8 @@ Total Pages Extracted and Analyzed: ${currentFiles.length} of ${currentFiles.len
                                     continue; // Try next model for same key first before abandoning key
                                 }
 
-                                if (response.status === 404 || lowerErr.includes('not found') || lowerErr.includes('does not exist') || lowerErr.includes('no longer available') || lowerErr.includes('deprecated') || lowerErr.includes('unsupported')) {
-                                    continue;
-                                }
+                                // Skip any model endpoint errors silently and try next model
+                                continue;
 
                             } catch (err) {
                                 if (err.message && err.message.startsWith('❌')) throw err;
