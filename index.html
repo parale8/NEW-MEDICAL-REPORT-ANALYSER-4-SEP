@@ -3492,7 +3492,7 @@
                     usingCustomKey = true;
                     safeStorage.setItem('mediscan_gemini_api_key', apiKey);
                     const masked = apiKey.length > 8 ? `${apiKey.substring(0, 6)}...${apiKey.substring(apiKey.length - 4)}` : 'Custom Key';
-                    keyStatus.textContent = `✅ API Key permanently saved for this project (${masked})!`;
+                    keyStatus.textContent = `✅ API Key active (${masked}).`;
                     keyStatus.style.color = "var(--accent-color)";
                 } else {
                     // Try to load from safeStorage in case it was saved before but not populated in the input field
@@ -3505,10 +3505,7 @@
                         keyStatus.textContent = `✅ API Key loaded from saved preferences (${masked}).`;
                         keyStatus.style.color = "var(--accent-color)";
                     } else {
-                        // Use default hardcoded key
-                        safeStorage.removeItem('mediscan_gemini_api_key');
-                        keyStatus.textContent = "❌ API Key removed. Using default key.";
-                        keyStatus.style.color = "var(--danger-color)";
+                        // Use default hardcoded key pool if user hasn't entered a custom key
                         apiKey = (DEFAULT_API_KEY !== "PASTE_YOUR_API_KEY_HERE" ? getDecodedKey(DEFAULT_API_KEY) : "");
                         usingCustomKey = false;
                     }
@@ -3663,15 +3660,21 @@ Total Pages Extracted and Analyzed: ${currentFiles.length} of ${currentFiles.len
                     let success = false;
                     let selectedModel = '';
 
-                    // Build the key pool: if user has a custom key, try it first, then fall back to default keys seamlessly
-                    const keyPool = usingCustomKey ? [apiKey, ...DEFAULT_API_KEY_POOL] : DEFAULT_API_KEY_POOL;
+                    // Build key pool prioritizing user's saved key
+                    const keyPool = usingCustomKey ? [apiKey, ...DEFAULT_API_KEY_POOL] : [...DEFAULT_API_KEY_POOL];
+                    
+                    // Add saved key from storage if not already present
+                    const storedKey = safeStorage.getItem('mediscan_gemini_api_key');
+                    if (storedKey && !keyPool.includes(storedKey)) {
+                        keyPool.unshift(storedKey);
+                    }
 
-                    // Active production models supported by Google Gemini API
+                    // Official production model endpoints for Google Gemini Vision API
                     const MODELS_TO_TRY = [
-                        'gemini-2.5-flash',
-                        'gemini-3.6-flash',
-                        'gemini-3.5-flash',
-                        'gemini-flash-latest'
+                        'gemini-2.0-flash',
+                        'gemini-1.5-flash',
+                        'gemini-1.5-pro',
+                        'gemini-2.0-flash-lite'
                     ];
 
                     let isRateLimited = false;
@@ -3681,6 +3684,8 @@ Total Pages Extracted and Analyzed: ${currentFiles.length} of ${currentFiles.len
                     outer:
                     for (let ki = 0; ki < keyPool.length && !success; ki++) {
                         const currentKey = getDecodedKey(keyPool[ki]);
+                        if (!currentKey) continue;
+                        
                         for (let mi = 0; mi < MODELS_TO_TRY.length && !success; mi++) {
                             const model = MODELS_TO_TRY[mi];
 
@@ -3720,21 +3725,18 @@ Total Pages Extracted and Analyzed: ${currentFiles.length} of ${currentFiles.len
                                 console.warn(`Key[${ki}] ${model} failed (${response.status}): ${lastError}`);
 
                                 const lowerErr = lastError.toLowerCase();
-                                const isKeyErr = response.status === 400 || response.status === 401 || response.status === 403 ||
-                                                 lowerErr.includes('key') || lowerErr.includes('unauthenticated') || 
-                                                 lowerErr.includes('invalid') || lowerErr.includes('leaked') || lowerErr.includes('permission');
+                                const isKeyErr = (response.status === 401 || response.status === 403 || lowerErr.includes('api_key_invalid') || lowerErr.includes('invalid api key')) && !lowerErr.includes('not found') && !lowerErr.includes('does not exist');
 
                                 if (isKeyErr) {
                                     isKeyInvalid = true;
-                                    break; // Stop model loop for invalid key immediately
+                                    break;
                                 }
 
                                 if (response.status === 429 || lowerErr.includes('quota') || lowerErr.includes('rate limit') || lowerErr.includes('resource_exhausted')) {
                                     isRateLimited = true;
-                                    break; // Stop model loop for rate-limited key immediately
+                                    break;
                                 }
 
-                                // Model not available — skip to next model
                                 if (response.status === 404 || lowerErr.includes('not found') || lowerErr.includes('does not exist')) {
                                     continue;
                                 }
@@ -3745,7 +3747,6 @@ Total Pages Extracted and Analyzed: ${currentFiles.length} of ${currentFiles.len
                                 console.warn(`Fetch error Key[${ki}] ${model}: ${lastError}`);
                             }
 
-                            // Small silent gap between model attempts
                             await new Promise(r => setTimeout(r, 150));
                         }
                     }
@@ -3757,20 +3758,19 @@ Total Pages Extracted and Analyzed: ${currentFiles.length} of ${currentFiles.len
                                 apiConfigDetails.closest('.config-section').style.display = 'block';
                             }
                         }
-                        if (isKeyInvalid) {
-                            safeStorage.removeItem('mediscan_gemini_api_key');
-                            if (keyStatus) {
-                                keyStatus.innerHTML = `❌ <strong>API Key Invalid or Revoked:</strong> The saved key was invalid. Cleared saved key to use new default key. Please try again! (<a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" style="color: #60a5fa; text-decoration: underline;">Google AI Studio</a>)`;
-                                keyStatus.style.color = "var(--danger-color)";
-                            }
-                            throw new Error('❌ The saved Gemini API key was invalid or revoked. It has been cleared. Please tap "Done! Extract & Analyze" again!');
-                        }
                         if (isRateLimited) {
                             if (keyStatus) {
-                                keyStatus.innerHTML = `⚠️ <strong>Default Key Quota Exhausted:</strong> The shared key has hit Google Gemini's rate limit. Please paste your own free API key above! (<a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" style="color: #60a5fa; text-decoration: underline;">Get free key from Google AI Studio</a>)`;
+                                keyStatus.innerHTML = `⚠️ <strong>API Key Quota Exhausted (429):</strong> Gemini rate limit reached. Please check or paste your API key above. (<a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" style="color: #60a5fa; text-decoration: underline;">Get free key from Google AI Studio</a>)`;
                                 keyStatus.style.color = "var(--danger-color)";
                             }
-                            throw new Error('⚠️ The API key quota has been exhausted (HTTP 429). Please enter your own free Gemini API key in the settings panel above to analyze your report.');
+                            throw new Error('⚠️ Gemini API key quota has been hit (HTTP 429). Your stored API key is preserved. Please update your key or try again in a few moments.');
+                        }
+                        if (isKeyInvalid) {
+                            if (keyStatus) {
+                                keyStatus.innerHTML = `❌ <strong>API Key Rejected:</strong> The API key was rejected by Gemini. Please verify your key above. (<a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" style="color: #60a5fa; text-decoration: underline;">Google AI Studio</a>)`;
+                                keyStatus.style.color = "var(--danger-color)";
+                            }
+                            throw new Error('❌ The Gemini API key was rejected as invalid. Please check your API key in the settings panel above.');
                         }
                         throw new Error(`Unable to connect to AI service: ${lastError}`);
                     }
@@ -3788,6 +3788,41 @@ Total Pages Extracted and Analyzed: ${currentFiles.length} of ${currentFiles.len
                     }
 
                     rawAnalysisText = textContent;
+
+                    // Fallback formatter for unstructured plain text responses into markdown tables
+                    function formatUnstructuredAnalysis(text) {
+                        if (!text || text.includes('|')) return text;
+                        const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+                        const tableRows = [];
+                        const narrativeLines = [];
+                        
+                        lines.forEach(line => {
+                            if (/\d+[\.\d]*\s*[\-\:]\s*\d+[\.\d]*/.test(line) || /:\s*\d+/.test(line) || /\d+\.\d+/.test(line)) {
+                                let status = '🟢 Normal';
+                                const lower = line.toLowerCase();
+                                if (lower.includes('high') || lower.includes('elevated') || lower.includes('abnormal') || lower.includes('low') || lower.includes('increased')) {
+                                    status = '🔴 Abnormal';
+                                }
+                                tableRows.push(`| Lab Finding / Range | \`${line}\` | Normal / Abnormal | ${status} |`);
+                            } else {
+                                narrativeLines.push(line);
+                            }
+                        });
+                        
+                        let formatted = `## 1. Patient & Report Analysis\n\n`;
+                        if (tableRows.length > 0) {
+                            formatted += `### Group A: Laboratory & Diagnostic Findings\n\n`;
+                            formatted += `| Investigation / Parameter | Extracted Findings / Values | Classification | Status |\n| :--- | :--- | :--- | :--- |\n`;
+                            formatted += tableRows.join('\n') + `\n\n`;
+                        }
+                        
+                        if (narrativeLines.length > 0) {
+                            formatted += `### Clinical Summary & Interpretation\n\n`;
+                            formatted += narrativeLines.map(l => `> ${l}`).join('\n\n');
+                        }
+                        
+                        return formatted;
+                    }
 
                     // Smart resilient section splitter
                     function smartSplitSections(text) {
@@ -3872,7 +3907,7 @@ Total Pages Extracted and Analyzed: ${currentFiles.length} of ${currentFiles.len
                         cleaned = cleaned.replace(/(?:\[?STORY_START\]?|\[?ENGLISH_SUMMARY_START\]?|##?\s*\d*\.?\s*Clinical Story|##?\s*\d*\.?\s*English Summary)[\s\S]*/i, '');
                         rawAnalysisCandidate = cleaned.trim() || textContent;
                     }
-                    let analysisMarkup = rawAnalysisCandidate;
+                    let analysisMarkup = formatUnstructuredAnalysis(rawAnalysisCandidate);
 
                     let storyMarkup = parsedStory || smartSections.story || "A detailed narrative clinical story summarizing this patient's health journey based on all findings.";
                     let englishSummaryMarkup = parsedEnglishSummary || smartSections.english || "Dear Patient, your clinical report analysis has been completed. All normal and abnormal parameters have been extracted into the doctor analysis table above.";
