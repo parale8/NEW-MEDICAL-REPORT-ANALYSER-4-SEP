@@ -3679,6 +3679,7 @@ Total Pages Extracted and Analyzed: ${currentFiles.length} of ${currentFiles.len
                     // Standard active production model endpoints for Google Gemini Vision API
                     const MODELS_TO_TRY = [
                         'gemini-1.5-flash',
+                        'gemini-1.5-flash-8b',
                         'gemini-1.5-pro',
                         'gemini-flash-latest'
                     ];
@@ -3702,7 +3703,7 @@ Total Pages Extracted and Analyzed: ${currentFiles.length} of ${currentFiles.len
                                     headers['Authorization'] = `Bearer ${currentKey}`;
                                 }
 
-                                response = await fetch(url, {
+                                const fetchPayload = {
                                     method: 'POST',
                                     headers: headers,
                                     body: JSON.stringify({
@@ -3718,7 +3719,15 @@ Total Pages Extracted and Analyzed: ${currentFiles.length} of ${currentFiles.len
                                             maxOutputTokens: 8192
                                         }
                                     })
-                                });
+                                };
+
+                                response = await fetch(url, fetchPayload);
+
+                                // Automatic 1-second retry on temporary Google server high demand / spikes (503 / 500)
+                                if (!response.ok && (response.status === 503 || response.status === 500 || response.status === 429)) {
+                                    await new Promise(r => setTimeout(r, 800));
+                                    response = await fetch(url, fetchPayload);
+                                }
 
                                 if (response.ok) {
                                     success = true;
