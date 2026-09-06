@@ -3676,11 +3676,8 @@ Total Pages Extracted and Analyzed: ${currentFiles.length} of ${currentFiles.len
                         keyPool.unshift(storedKey);
                     }
 
-                    // Active Google Gemini Vision API model endpoints
+                    // Stable production model endpoints for Google Gemini Vision API
                     const MODELS_TO_TRY = [
-                        'gemini-2.5-flash',
-                        'gemini-3.5-flash-lite',
-                        'gemini-3.5-flash',
                         'gemini-1.5-flash',
                         'gemini-1.5-pro',
                         'gemini-2.0-flash'
