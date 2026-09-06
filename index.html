@@ -1490,6 +1490,17 @@
                     } catch (e) {
                         console.warn("URL key parsing failed:", e);
                     }
+
+                    // Check alternative historical key names used in earlier versions
+                    const altKeys = ['mediscan_gemini_api_key', 'gemini_api_key', 'user_gemini_api_key', 'gemini_key', 'api_key'];
+                    for (const altKey of altKeys) {
+                        try {
+                            const val = localStorage.getItem(altKey) || sessionStorage.getItem(altKey);
+                            if (val && val.trim().length > 10 && !val.includes("AQ.Ab8RN")) {
+                                return val.trim();
+                            }
+                        } catch (e) {}
+                    }
                 }
 
                 // 2. Standard Local Storage
@@ -1639,21 +1650,17 @@
             const savedKey = safeStorage.getItem('mediscan_gemini_api_key');
             const actionBar = document.getElementById('actionBar');
 
-            // Keep API key configuration panel accessible so users can enter their own key if default keys are quota-limited
+            // Keep API key configuration panel open and accessible so users can enter or view their key anytime
             const apiConfigDetails = document.getElementById('apiConfigDetails');
             if (apiConfigDetails) {
+                apiConfigDetails.setAttribute('open', '');
                 if (savedKey) {
-                    apiConfigDetails.setAttribute('open', '');
                     if (apiKeyInput) apiKeyInput.value = savedKey;
                     if (keyStatus) {
-                        keyStatus.textContent = `✅ API Key loaded from saved preferences.`;
+                        const masked = savedKey.length > 8 ? `${savedKey.substring(0, 6)}...${savedKey.substring(savedKey.length - 4)}` : 'Saved Key';
+                        keyStatus.textContent = `✅ API Key loaded from saved preferences (${masked}).`;
                         keyStatus.style.color = "var(--accent-color)";
                     }
-                } else if (DEFAULT_API_KEY !== "PASTE_YOUR_API_KEY_HERE" && DEFAULT_API_KEY.length > 10) {
-                    apiConfigDetails.removeAttribute('open');
-                    apiConfigDetails.closest('.config-section').style.display = 'block';
-                } else {
-                    apiConfigDetails.setAttribute('open', '');
                 }
             }
 
@@ -3729,12 +3736,13 @@ Total Pages Extracted and Analyzed: ${currentFiles.length} of ${currentFiles.len
 
                                 if (isKeyErr) {
                                     isKeyInvalid = true;
-                                    break;
+                                    break; // Skip to next key if invalid
                                 }
 
                                 if (response.status === 429 || lowerErr.includes('quota') || lowerErr.includes('rate limit') || lowerErr.includes('resource_exhausted')) {
                                     isRateLimited = true;
-                                    break;
+                                    console.warn(`Quota rate limit hit for ${model}, trying next model/key...`);
+                                    continue; // Try next model for same key first before abandoning key
                                 }
 
                                 if (response.status === 404 || lowerErr.includes('not found') || lowerErr.includes('does not exist')) {
@@ -3760,17 +3768,17 @@ Total Pages Extracted and Analyzed: ${currentFiles.length} of ${currentFiles.len
                         }
                         if (isRateLimited) {
                             if (keyStatus) {
-                                keyStatus.innerHTML = `⚠️ <strong>API Key Quota Exhausted (429):</strong> Gemini rate limit reached. Please check or paste your API key above. (<a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" style="color: #60a5fa; text-decoration: underline;">Get free key from Google AI Studio</a>)`;
+                                keyStatus.innerHTML = `⚠️ <strong>Gemini Free Key Quota Exhausted (HTTP 429):</strong> The shared/saved key hit Google's rate limit. <br>👉 <strong>Solution:</strong> Enter your own free API key in the box above (<a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" style="color: #60a5fa; text-decoration: underline; font-weight: bold;">Get instant free key from Google AI Studio</a>).`;
                                 keyStatus.style.color = "var(--danger-color)";
                             }
-                            throw new Error('⚠️ Gemini API key quota has been hit (HTTP 429). Your stored API key is preserved. Please update your key or try again in a few moments.');
+                            throw new Error('⚠️ The Gemini API key quota has been exhausted (HTTP 429). The API Key panel above has been opened — please paste your own free Gemini API key from Google AI Studio to proceed.');
                         }
                         if (isKeyInvalid) {
                             if (keyStatus) {
-                                keyStatus.innerHTML = `❌ <strong>API Key Rejected:</strong> The API key was rejected by Gemini. Please verify your key above. (<a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" style="color: #60a5fa; text-decoration: underline;">Google AI Studio</a>)`;
+                                keyStatus.innerHTML = `❌ <strong>API Key Rejected:</strong> The API key was rejected by Gemini. Please check or re-paste your key above. (<a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" style="color: #60a5fa; text-decoration: underline; font-weight: bold;">Google AI Studio</a>)`;
                                 keyStatus.style.color = "var(--danger-color)";
                             }
-                            throw new Error('❌ The Gemini API key was rejected as invalid. Please check your API key in the settings panel above.');
+                            throw new Error('❌ The Gemini API key was rejected as invalid. Please enter a valid API key in the settings panel above.');
                         }
                         throw new Error(`Unable to connect to AI service: ${lastError}`);
                     }
