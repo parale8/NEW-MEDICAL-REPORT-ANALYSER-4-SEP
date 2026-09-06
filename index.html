@@ -2958,6 +2958,7 @@
                 const sharePdfBtn = document.getElementById('waPromptSharePdfBtn');
                 const cancelBtn = document.getElementById('waPromptCancelBtn');
                 const iconEl = document.getElementById('waPromptIcon');
+                const statusSpan = document.getElementById('waPromptStatus');
 
                 // Read any pre-entered phone number from UI controls or localStorage
                 let initialPhone = '';
@@ -2976,16 +2977,15 @@
                     if (titleEl) titleEl.textContent = 'Share Structured Report with Doctor?';
                     if (subTitleEl) subTitleEl.textContent = 'Choose how you want to send the report on WhatsApp:';
                     if (recipientEl) recipientEl.textContent = getDoctorSalutationText();
-                    if (confirmBtn) confirmBtn.innerHTML = '📎 Attach PDF & Share via WhatsApp';
-                    if (sharePdfBtn) sharePdfBtn.innerHTML = '💬 Open WhatsApp Direct Chat (Text Only)';
                 } else {
                     if (iconEl) iconEl.textContent = '🩺';
                     if (titleEl) titleEl.textContent = 'Share Health Summary with Patient?';
                     if (subTitleEl) subTitleEl.textContent = 'Choose how you want to send the summary on WhatsApp:';
                     if (recipientEl) recipientEl.textContent = 'Patient (Health Summary)';
-                    if (confirmBtn) confirmBtn.innerHTML = '📎 Attach PDF & Share via WhatsApp';
-                    if (sharePdfBtn) sharePdfBtn.innerHTML = '💬 Open WhatsApp Direct Chat (Text Only)';
                 }
+
+                if (confirmBtn) confirmBtn.innerHTML = '📎 Attach PDF & Share via WhatsApp';
+                if (sharePdfBtn) sharePdfBtn.innerHTML = '💬 Open WhatsApp Direct Chat (Text Only)';
 
                 if (filenameEl) filenameEl.textContent = filename;
                 if (modal) modal.style.display = 'flex';
@@ -3010,13 +3010,21 @@
                 const getPdfBlob = async () => {
                     let blob = (recipientType === 'doctor') ? window.autoStructuredPdfBlob : window.autoPatientPdfBlob;
                     if (!blob) {
-                        showNotificationToast('⏳ Preparing PDF report...', 3000);
+                        if (statusSpan) statusSpan.innerHTML = '⏳ Preparing PDF...';
                         blob = await generateSectionPdfBlob(title, sectionColor, contentElementId, filename);
                         if (recipientType === 'doctor') window.autoStructuredPdfBlob = blob;
                         else window.autoPatientPdfBlob = blob;
+                        if (statusSpan) statusSpan.innerHTML = '✅ PDF Pre-generated & Ready';
                     }
                     return blob;
                 };
+
+                // Pre-warm PDF Blob immediately on modal display
+                // This ensures getPdfBlob returns in 0ms when confirmBtn is clicked,
+                // preserving user gesture activation so navigator.share works 100% of the time!
+                getPdfBlob().then(() => {
+                    if (statusSpan) statusSpan.innerHTML = '✅ PDF Ready to Attach';
+                }).catch(err => console.warn("PDF pre-warm notice:", err));
 
                 // OPTION 1 (Primary Action): Attach PDF File directly to WhatsApp
                 if (confirmBtn) {
@@ -3024,8 +3032,8 @@
                         const cleanedPhone = savePhone();
                         closeModal();
 
-                        showNotificationToast('⏳ Preparing full PDF report with doctor remarks & footer...', 4000);
-                        const blob = await generateSectionPdfBlob(title, sectionColor, contentElementId, filename);
+                        // Retrieve pre-warmed blob (0ms delay if cached)
+                        const blob = await getPdfBlob();
                         const file = new File([blob], filename, { type: 'application/pdf' });
                         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
                         const waMsg = textForClipboard.length > 800 ? textForClipboard.substring(0, 800) + '\n\n[Full report in attached PDF]' : textForClipboard;
